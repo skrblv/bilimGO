@@ -6,9 +6,10 @@ export const MainLayout = () => {
         <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
-                <Outlet /> {/* Здесь будут рендериться наши страницы */}
+                {/* Здесь будут рендериться все дочерние страницы */}
+                <Outlet /> 
             </main>
-            {/* Здесь можно будет добавить Footer в будущем */}
+            {/* Сюда можно будет добавить глобальный футер */}
         </div>
     );
 };

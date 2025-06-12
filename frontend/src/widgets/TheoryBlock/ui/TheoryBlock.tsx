@@ -1,29 +1,26 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Card } from '../../../shared/ui/Card';
 import type { ContentBlock } from '../../../shared/types/course';
 
-interface TheoryBlockProps {
-    blocks: ContentBlock[];
-    step: number;
-}
-
+// Анимации для появления контента
 const variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+    hidden: { opacity: 0, y: 30, scale: 0.98 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
+    exit: { opacity: 0, y: -30, scale: 0.98, transition: { duration: 0.2, ease: "easeIn" } },
 };
 
+// Функция для рендеринга одного блока контента
 const renderBlock = (block: ContentBlock) => {
     switch (block.type) {
         case 'text':
-            return <p className="text-lg leading-relaxed text-text-primary">{block.content}</p>;
+            const formattedContent = block.content.replace(/\*(.*?)\*/g, '<strong class="text-primary font-semibold">$1</strong>');
+            return <p className="text-lg leading-relaxed text-text-primary" dangerouslySetInnerHTML={{ __html: formattedContent }} />;
         case 'code':
             return (
-                <div className="text-sm rounded-lg overflow-hidden my-4 border border-border">
-                    <div className="bg-gray-800 px-4 py-2 text-xs text-gray-400">{block.language}</div>
-                    <SyntaxHighlighter language={block.language || 'python'} style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, borderRadius: 0 }}>
+                <div className="text-sm rounded-lg overflow-hidden my-4 border border-border shadow-inner">
+                    <SyntaxHighlighter language={block.language || 'python'} style={tomorrow} showLineNumbers customStyle={{ margin: 0, borderRadius: 0, padding: '1.25rem' }}>
                         {block.content}
                     </SyntaxHighlighter>
                 </div>
@@ -38,13 +35,18 @@ const renderBlock = (block: ContentBlock) => {
         default:
             return null;
     }
+};
+
+interface TheoryBlockProps {
+    blocks: ContentBlock[];
+    step: number;
 }
 
 export const TheoryBlock = ({ blocks, step }: TheoryBlockProps) => {
     const currentBlock = blocks[step];
 
     return (
-        <Card>
+        <Card className="!p-8 md:!p-10 border-2 border-border bg-gradient-to-br from-surface to-background">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={step}

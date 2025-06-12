@@ -12,57 +12,58 @@ import { useAuthStore } from '../../stores/authStore';
 import { useEffect } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
 
-// Компонент-обертка для проверки статуса аутентификации
+// Компонент-обертка для проверки статуса аутентификации при старте
 const AppGate = () => {
     const { isInitialized, initialize } = useAuthStore();
     
     useEffect(() => {
-        // Запускаем инициализацию только один раз при старте приложения
         initialize();
-    }, [initialize]); // Пустая зависимость не нужна, initialize стабильна
+    }, [initialize]);
     
-    // Пока идет проверка, показываем глобальный лоадер
     if (!isInitialized) {
-        return <div className="flex items-center justify-center h-screen"><p>Загрузка приложения...</p></div>;
+        return <div className="flex items-center justify-center h-screen bg-background"><p>Загрузка приложения...</p></div>;
     }
 
     return <RouterProvider router={router} />;
 }
 
-// Компонент-обертка для защищенных роутов
+// Компонент-обертка для защищенных роутов, которые используют MainLayout
 const PrivateRouteWrapper = () => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const location = useLocation();
     
     if (!isAuthenticated) {
-        // Если не залогинен, перенаправляем на страницу входа, запомнив, откуда пришли
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
     
-    // Если залогинен, показываем основной Layout, в который будут вставляться дочерние страницы
     return <MainLayout />;
+};
+
+// Компонент-обертка для защищенных роутов, которые НЕ используют MainLayout
+const PrivateRouteStandalone = ({ children }: { children: React.ReactNode }) => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const location = useLocation();
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return <>{children}</>;
 };
 
 const router = createBrowserRouter([
     // --- ПУБЛИЧНЫЕ РОУТЫ ---
-    // Эти роуты не используют MainLayout и не требуют логина
     { path: '/login', element: <LoginPage /> },
     { path: '/register', element: <RegisterPage /> },
     
-    // --- ПРИВАТНЫЕ РОУТЫ ---
-    // Все роуты внутри этого блока будут защищены и будут использовать MainLayout
+    // --- ПРИВАТНЫЕ РОУТЫ С ОБЩИМ НАВБАРОМ ---
     {
         path: '/',
         element: <PrivateRouteWrapper />,
         children: [
-            // Главная страница после логина (редирект на курсы)
             { index: true, element: <Navigate to="/courses" replace /> }, 
-            
-            // Основные страницы
             { path: 'courses', element: <CoursesPage /> },
-            // ВАЖНЫЙ РОУТ: здесь мы объявляем параметр :id
-            { path: 'courses/:id', element: <CourseDetailPage /> }, 
-            { path: 'courses/:courseId/lessons/:lessonId', element: <LessonPage /> },
+            { path: 'courses/:id', element: <CourseDetailPage /> },
             { path: 'leaderboard', element: <LeaderboardPage /> },
             { path: 'profile', element: <ProfilePage /> },
             { path: 'profile/edit', element: <ProfileEditPage /> },
@@ -70,8 +71,17 @@ const router = createBrowserRouter([
         ]
     },
 
+    // --- ОТДЕЛЬНЫЙ РОУТ ДЛЯ СТРАНИЦЫ УРОКА (РЕЖИМ ПОГРУЖЕНИЯ) ---
+    {
+        path: '/courses/:courseId/lessons/:lessonId',
+        element: (
+            <PrivateRouteStandalone>
+                <LessonPage />
+            </PrivateRouteStandalone>
+        )
+    },
+
     // --- ОБРАБОТКА НЕИЗВЕСТНЫХ URL ---
-    // Если пользователь ввел что-то несуществующее, перенаправляем его на главную
     { path: '*', element: <Navigate to="/" replace /> },
 ]);
 

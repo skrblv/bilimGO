@@ -1,3 +1,4 @@
+import re
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,9 +14,39 @@ from .serializers import (
 )
 from .services import check_and_award_badges
 
-class CourseViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+def normalize_text(text: str) -> str:
+    """Убирает пробелы в начале/конце и приводит к нижнему регистру для текстовых ответов."""
+    return str(text).strip().lower()
 
+def execute_and_compare_code(user_code: str, correct_code_example: str) -> bool:
+    """
+    Выполняет код пользователя и эталонный код в изолированных окружениях
+    и сравнивает итоговые словари переменных.
+    """
+    try:
+        # Декодируем escape-последовательности, чтобы \n стал реальным переносом строки
+        processed_user_code = user_code.encode().decode('unicode_escape')
+        processed_correct_code = correct_code_example.encode().decode('unicode_escape')
+        
+        user_scope = {}
+        correct_scope = {}
+
+        # Выполняем код в безопасном окружении, без доступа к опасным встроенным функциям
+        safe_builtins = {"True": True, "False": False, "int": int, "str": str, "print": print, "list": list, "dict": dict}
+        exec(processed_user_code, {"__builtins__": safe_builtins}, user_scope)
+        exec(processed_correct_code, {"__builtins__": safe_builtins}, correct_scope)
+        
+        # Сравниваем словари. Если они идентичны, код функционально эквивалентен.
+        return user_scope == correct_scope
+        
+    except Exception as e:
+        print(f"Ошибка при выполнении кода: {e}")
+        return False
+
+class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+    """Представление для получения списка курсов и детальной информации о курсе."""
+    permission_classes = [permissions.IsAuthenticated]
+    
     def get_queryset(self):
         return Course.objects.filter(is_published=True)
 
@@ -27,6 +58,7 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
         return CourseListSerializer
 
 class CompleteLessonView(APIView):
+    """Представление для завершения урока, начисления XP и выдачи наград."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -72,6 +104,7 @@ class CompleteLessonView(APIView):
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
 class CheckAnswerView(APIView):
+    """Представление для проверки ответа пользователя на задание."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -85,36 +118,44 @@ class CheckAnswerView(APIView):
             )
 
         task = get_object_or_404(Task, id=task_id)
-        is_correct = (str(user_answer).lower() == str(task.correct_answer).lower())
-
+        is_correct = False
+        
+        if task.task_type == 'code':
+            is_correct = execute_and_compare_code(user_answer, task.correct_answer)
+        else:
+            if normalize_text(user_answer) == normalize_text(task.correct_answer):
+                is_correct = True
+        
         if is_correct:
             return Response({"is_correct": True})
         else:
             return Response({
                 "is_correct": False,
-                "correct_answer": task.correct_answer
+                "correct_answer": None if task.task_type == 'code' else task.correct_answer
             })
             
 class RequestHintView(APIView):
+    """Представление для получения подсказки к заданию."""
     permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
         task_id = request.data.get('task_id')
+        if not task_id:
+            return Response({"error": "task_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
         task = get_object_or_404(Task, id=task_id)
-        
         user = request.user
         
-        # Просто берем первую неиспользованную подсказку
-        # В реальном приложении нужно было бы хранить, какие подсказки юзер уже видел
-        hint = task.hints.first()
+        hint = task.hints.first() 
         
         if hint:
-            user.xp -= hint.xp_penalty
-            if user.xp < 0:
-                user.xp = 0
+            user.xp = max(0, user.xp - hint.xp_penalty)
             user.save()
             
-            return Response({"hint": {"text": hint.text}, "message": f"Вы использовали подсказку. Списано {hint.xp_penalty} XP."})
+            return Response({
+                "hint": {"text": hint.text},
+                "message": f"Вы использовали подсказку. Списано {hint.xp_penalty} XP."
+            })
         else:
             return Response(
                 {"message": "Для этого задания нет подсказок."}, 
