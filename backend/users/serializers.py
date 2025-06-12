@@ -1,0 +1,67 @@
+from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
+from djoser.serializers import UserSerializer as BaseUserSerializer
+from .models import User, Friendship
+from courses.serializers import UserBadgeSerializer
+from django.db.models import Q
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        model = User
+        fields = ('id', 'email', 'username', 'password')
+
+class FriendSerializer(serializers.ModelSerializer):
+    friendship_status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'avatar', 'xp', 'friendship_status')
+
+    def get_friendship_status(self, obj):
+        request_user = self.context.get('request').user
+        if not request_user or not request_user.is_authenticated or request_user == obj:
+            return 'self'
+        
+        friendship = Friendship.objects.filter(
+            (Q(from_user=request_user, to_user=obj) | Q(from_user=obj, to_user=request_user))
+        ).first()
+
+        if not friendship:
+            return 'not_friends'
+        
+        if friendship.status == Friendship.Status.ACCEPTED:
+            return 'friends'
+        
+        if friendship.status == Friendship.Status.PENDING:
+            if friendship.from_user == request_user:
+                return 'request_sent'
+            else:
+                return 'request_received'
+
+        return 'not_friends'
+
+class UserSerializer(BaseUserSerializer):
+    user_badges = UserBadgeSerializer(many=True, read_only=True)
+    friends = serializers.SerializerMethodField()
+
+    class Meta(BaseUserSerializer.Meta):
+        model = User
+        fields = ('id', 'email', 'username', 'avatar', 'xp', 'streak', 'last_activity_date', 'user_badges', 'friends')
+
+    def get_friends(self, obj):
+        accepted_friendships = Friendship.objects.filter(
+            (Q(from_user=obj) | Q(to_user=obj)) & Q(status=Friendship.Status.ACCEPTED)
+        )
+        friend_ids = []
+        for f in accepted_friendships:
+            friend_ids.append(f.from_user.id if f.to_user.id == obj.id else f.to_user.id)
+        
+        friends = User.objects.filter(id__in=friend_ids)
+        return FriendSerializer(friends, many=True, context=self.context).data
+
+class FriendshipSerializer(serializers.ModelSerializer):
+    from_user = FriendSerializer(read_only=True)
+    to_user = FriendSerializer(read_only=True)
+    class Meta:
+        model = Friendship
+        fields = ['id', 'from_user', 'to_user', 'status', 'created_at']
