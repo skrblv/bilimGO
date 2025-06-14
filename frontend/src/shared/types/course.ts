@@ -6,18 +6,21 @@ export interface Hint {
     xp_penalty: number;
 }
 
+export type MultipleChoiceOptions = Record<string, string>;
+export type ConstructorOptions = { options: string[] };
+
 export interface Task {
     id: number;
     task_type: string;
     question: string;
-    options: Record<string, string> | null;
+    options: MultipleChoiceOptions | ConstructorOptions | null;
     correct_answer: string;
+    code_template?: string | null;
     hints: Hint[];
 }
 
 // --- Типы для контента урока ---
 
-// Блок контента для пошаговой теории
 export interface ContentBlock {
     type: 'text' | 'code' | 'image';
     content: string;
@@ -26,18 +29,16 @@ export interface ContentBlock {
     caption?: string;
 }
 
-// Урок
 export interface Lesson {
     id: number;
     title: string;
-    theory_content: ContentBlock[]; // Используем структурированную теорию
+    theory_content: ContentBlock[];
     xp_reward: number;
     tasks: Task[];
 }
 
 // --- Типы для структуры курса ---
 
-// Навык
 export interface Skill {
     id: number;
     title: string;
@@ -45,7 +46,6 @@ export interface Skill {
     lessons: Lesson[];
 }
 
-// Курс (в списке)
 export interface Course {
     id: number;
     title: string;
@@ -53,14 +53,12 @@ export interface Course {
     image_url: string | null;
 }
 
-// Детальная информация о курсе
 export interface CourseDetail extends Course {
     skills: Skill[];
 }
 
 // --- Типы для наград и геймификации ---
 
-// Бейдж
 export interface Badge {
     id: number;
     title: string;
@@ -69,7 +67,6 @@ export interface Badge {
     code: string;
 }
 
-// Связь "Пользователь-Бейдж"
 export interface UserBadge {
     badge: Badge;
     awarded_at: string;
@@ -77,7 +74,6 @@ export interface UserBadge {
 
 // --- Типы для социальных функций ---
 
-// Друг (или пользователь в поиске)
 export interface Friend {
     id: number;
     username: string;
@@ -86,7 +82,6 @@ export interface Friend {
     friendship_status: 'not_friends' | 'friends' | 'request_sent' | 'request_received' | 'self' | null;
 }
 
-// Связь "Дружба" (запрос)
 export interface Friendship {
     id: number;
     from_user: Friend;

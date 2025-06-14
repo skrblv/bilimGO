@@ -18,25 +18,23 @@ def normalize_text(text: str) -> str:
     """Убирает пробелы в начале/конце и приводит к нижнему регистру для текстовых ответов."""
     return str(text).strip().lower()
 
+def normalize_code_for_comparison(code_string: str) -> str:
+    """Убирает все пробельные символы и приводит к нижнему регистру."""
+    return re.sub(r'\s+', '', str(code_string)).lower()
+
 def execute_and_compare_code(user_code: str, correct_code_example: str) -> bool:
-    """
-    Выполняет код пользователя и эталонный код в изолированных окружениях
-    и сравнивает итоговые словари переменных.
-    """
+    """Выполняет код пользователя и эталонный код и сравнивает итоговые словари переменных."""
     try:
-        # Декодируем escape-последовательности, чтобы \n стал реальным переносом строки
         processed_user_code = user_code.encode().decode('unicode_escape')
         processed_correct_code = correct_code_example.encode().decode('unicode_escape')
         
         user_scope = {}
         correct_scope = {}
-
-        # Выполняем код в безопасном окружении, без доступа к опасным встроенным функциям
         safe_builtins = {"True": True, "False": False, "int": int, "str": str, "print": print, "list": list, "dict": dict}
+        
         exec(processed_user_code, {"__builtins__": safe_builtins}, user_scope)
         exec(processed_correct_code, {"__builtins__": safe_builtins}, correct_scope)
         
-        # Сравниваем словари. Если они идентичны, код функционально эквивалентен.
         return user_scope == correct_scope
         
     except Exception as e:
@@ -44,7 +42,6 @@ def execute_and_compare_code(user_code: str, correct_code_example: str) -> bool:
         return False
 
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):
-    """Представление для получения списка курсов и детальной информации о курсе."""
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
@@ -58,7 +55,6 @@ class CourseViewSet(viewsets.ReadOnlyModelViewSet):
         return CourseListSerializer
 
 class CompleteLessonView(APIView):
-    """Представление для завершения урока, начисления XP и выдачи наград."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -96,15 +92,10 @@ class CompleteLessonView(APIView):
             progress.save()
             message = f"Вы повторили урок '{lesson.title}'. Так держать!"
 
-        response_serializer = LessonCompletionResponseSerializer({
-            'user': user,
-            'message': message
-        })
-
+        response_serializer = LessonCompletionResponseSerializer({ 'user': user, 'message': message })
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
 class CheckAnswerView(APIView):
-    """Представление для проверки ответа пользователя на задание."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
@@ -112,16 +103,18 @@ class CheckAnswerView(APIView):
         user_answer = request.data.get('answer')
 
         if not task_id or user_answer is None:
-            return Response(
-                {"error": "task_id and answer are required."}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "task_id and answer are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         task = get_object_or_404(Task, id=task_id)
         is_correct = False
         
         if task.task_type == 'code':
             is_correct = execute_and_compare_code(user_answer, task.correct_answer)
+        elif task.task_type == 'constructor':
+            normalized_user_answer = normalize_code_for_comparison(user_answer)
+            normalized_correct_answer = normalize_code_for_comparison(task.correct_answer)
+            if normalized_user_answer == normalized_correct_answer:
+                is_correct = True
         else:
             if normalize_text(user_answer) == normalize_text(task.correct_answer):
                 is_correct = True
@@ -131,11 +124,10 @@ class CheckAnswerView(APIView):
         else:
             return Response({
                 "is_correct": False,
-                "correct_answer": None if task.task_type == 'code' else task.correct_answer
+                "correct_answer": None if task.task_type in ['code', 'constructor'] else task.correct_answer
             })
             
 class RequestHintView(APIView):
-    """Представление для получения подсказки к заданию."""
     permission_classes = [permissions.IsAuthenticated]
     
     def post(self, request, *args, **kwargs):
@@ -151,13 +143,9 @@ class RequestHintView(APIView):
         if hint:
             user.xp = max(0, user.xp - hint.xp_penalty)
             user.save()
-            
             return Response({
                 "hint": {"text": hint.text},
                 "message": f"Вы использовали подсказку. Списано {hint.xp_penalty} XP."
             })
         else:
-            return Response(
-                {"message": "Для этого задания нет подсказок."}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"message": "Для этого задания нет подсказок."}, status=status.HTTP_404_NOT_FOUND)

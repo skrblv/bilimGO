@@ -22,7 +22,6 @@ class Skill(models.Model):
 class Lesson(models.Model):
     skill = models.ForeignKey(Skill, related_name='lessons', on_delete=models.CASCADE, verbose_name="Навык")
     title = models.CharField(max_length=200, verbose_name="Название урока")
-    # --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
     theory_content = models.JSONField(default=list, verbose_name="Содержимое теории (JSON)")
     xp_reward = models.PositiveIntegerField(default=10, verbose_name="Награда в XP")
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
@@ -32,11 +31,20 @@ class Lesson(models.Model):
 
 class Task(models.Model):
     lesson = models.ForeignKey(Lesson, related_name='tasks', on_delete=models.CASCADE, verbose_name="Урок")
-    TASK_TYPES = [('multiple_choice', 'Множественный выбор'), ('true_false', 'Верно/Неверно'), ('text_input', 'Ввод текста'), ('code', 'Кодовая задача')]
+    TASK_TYPES = [
+        ('multiple_choice', 'Множественный выбор'),
+        ('true_false', 'Верно/Неверно'),
+        ('text_input', 'Ввод текста'),
+        ('code', 'Кодовая задача'),
+        ('fill_in_blank', 'Вставить пропущенное'),
+        ('constructor', 'Конструктор кода'),
+    ]
     task_type = models.CharField(max_length=20, choices=TASK_TYPES, verbose_name="Тип задания")
     question = models.TextField(verbose_name="Текст вопроса")
-    options = models.JSONField(null=True, blank=True, verbose_name="Варианты ответа (JSON)")
+    options = models.JSONField(null=True, blank=True, verbose_name="Опции/Блоки (JSON)")
     correct_answer = models.CharField(max_length=255, verbose_name="Правильный ответ")
+    code_template = models.TextField(blank=True, null=True, verbose_name="Шаблон кода")
+    
     class Meta:
         verbose_name = "Задание"; verbose_name_plural = "Задания"
     def __str__(self): return f"Задание к уроку: {self.lesson.title}"

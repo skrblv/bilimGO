@@ -21,8 +21,9 @@ class TaskSerializer(serializers.ModelSerializer):
     hints = HintSerializer(many=True, read_only=True)
     class Meta:
         model = Task
-        # Отдаем correct_answer, чтобы LessonPage мог его использовать
-        fields = ['id', 'task_type', 'question', 'options', 'correct_answer', 'hints']
+        # --- ВОТ ИЗМЕНЕНИЕ ---
+        # Добавляем новое поле 'code_template'
+        fields = ['id', 'task_type', 'question', 'options', 'correct_answer', 'code_template', 'hints']
 
 class LessonSerializer(serializers.ModelSerializer):
     tasks = TaskSerializer(many=True, read_only=True)
@@ -38,7 +39,6 @@ class SkillSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'children', 'lessons']
     
     def get_children(self, obj):
-        # Рекурсивно сериализуем дочерние навыки
         return SkillSerializer(obj.children.all(), many=True, context=self.context).data
 
 class CourseListSerializer(serializers.ModelSerializer):
@@ -53,9 +53,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'image_url', 'skills']
     
     def get_skills(self, obj):
-        # Получаем только корневые навыки (у которых нет родителя)
         root_skills = obj.skills.filter(parent__isnull=True)
-        # Передаем context, чтобы вложенные сериализаторы могли получить доступ к request
         return SkillSerializer(root_skills, many=True, context=self.context).data
 
 class CompleteLessonSerializer(serializers.Serializer):
