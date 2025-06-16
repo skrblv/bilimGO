@@ -22,11 +22,13 @@ export interface Task {
 // --- Типы для контента урока ---
 
 export interface ContentBlock {
-    type: 'text' | 'code' | 'image';
+    type: 'text' | 'code' | 'image' | 'details' | 'alert' | 'divider';
     content: string;
     language?: string;
     url?: string;
     caption?: string;
+    summary?: string;
+    style?: 'info' | 'success' | 'warning' | 'danger';
 }
 
 export interface Lesson {

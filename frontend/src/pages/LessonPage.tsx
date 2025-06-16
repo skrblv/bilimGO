@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../shared/ui/Button';
 import { Modal } from '../shared/ui/Modal';
+import { Card } from '../shared/ui/Card';
 import { XCircleIcon, CheckCircleIcon, ArrowUturnLeftIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import type { Lesson, Task } from '../shared/types/course';
 import { completeLesson, checkAnswer } from '../shared/api/courses';
@@ -40,7 +41,11 @@ export const LessonPage = () => {
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [completionMessage, setCompletionMessage] = useState("");
 
-    useEffect(() => { if (!lesson && courseId) navigate(`/courses/${courseId}`); }, [lesson, courseId, navigate]);
+    useEffect(() => {
+        if (!lesson && courseId) {
+            navigate(`/courses/${courseId}`);
+        }
+    }, [lesson, courseId, navigate]);
 
     useEffect(() => {
         setIsAnswerChecked(false);
@@ -55,11 +60,15 @@ export const LessonPage = () => {
 
     const handleNext = async () => {
         if (stage === 'theory') {
-            if (theoryStep < totalTheorySteps - 1) setTheoryStep(p => p + 1);
-            else setStage(totalTasks > 0 ? 'task' : 'completed');
+            if (theoryStep < totalTheorySteps - 1) {
+                setTheoryStep(p => p + 1);
+            } else {
+                setStage(totalTasks > 0 ? 'task' : 'completed');
+            }
         } else if (stage === 'task' && isAnswerCorrect) {
-            if (currentTaskIndex < totalTasks - 1) setCurrentTaskIndex(p => p + 1);
-            else {
+            if (currentTaskIndex < totalTasks - 1) {
+                setCurrentTaskIndex(p => p + 1);
+            } else {
                 setStage('completed');
                 await handleCompleteLesson();
             }
@@ -67,8 +76,11 @@ export const LessonPage = () => {
     };
 
     const handleBack = () => {
-        if (stage === 'task' && currentTaskIndex === 0) setStage('theory');
-        if (stage === 'theory' && theoryStep > 0) setTheoryStep(p => p - 1);
+        if (stage === 'task' && currentTaskIndex === 0) {
+            setStage('theory');
+        } else if (stage === 'theory' && theoryStep > 0) {
+            setTheoryStep(p => p - 1);
+        }
     };
 
     const handleCheckAnswer = async () => {
@@ -78,8 +90,13 @@ export const LessonPage = () => {
             const response = await checkAnswer(currentTask.id, selectedAnswer);
             setIsAnswerChecked(true);
             setIsAnswerCorrect(response.is_correct);
-            if (!response.is_correct) setCorrectAnswerFromAPI(response.correct_answer ?? null);
-        } catch(e) { console.error(e); } 
+            if (!response.is_correct) {
+                setCorrectAnswerFromAPI(response.correct_answer ?? null);
+            }
+        } catch(e) { 
+            console.error(e);
+            alert("Ошибка при проверке ответа");
+        } 
         finally { setIsLoading(false); }
     };
     
@@ -92,7 +109,9 @@ export const LessonPage = () => {
             await refreshUserData();
             setCompletionMessage(response.message);
             setShowCompletionModal(true);
-        } catch (err: any) { alert(err.response?.data?.message || 'Не удалось завершить урок'); } 
+        } catch (err: any) { 
+            alert(err.response?.data?.message || 'Не удалось завершить урок'); 
+        } 
         finally { setIsLoading(false); }
     };
 
@@ -122,28 +141,40 @@ export const LessonPage = () => {
         }
     };
     
-    if (!lesson) return null;
+    if (!lesson) {
+        return <div className="flex items-center justify-center h-screen bg-background"><p>Загрузка урока...</p></div>;
+    }
 
     const progressPercentage = stage === 'theory' 
         ? ((theoryStep + 1) / (totalTheorySteps + totalTasks)) * 100
         : ((totalTheorySteps + currentTaskIndex + (isAnswerChecked && isAnswerCorrect ? 1 : 0)) / (totalTheorySteps + totalTasks)) * 100;
 
     const getFooterButtonText = () => {
-        if (stage === 'theory') return theoryStep < totalTheorySteps - 1 ? 'Далее' : (totalTasks > 0 ? 'К заданиям!' : 'Завершить урок');
+        if (stage === 'theory') {
+            return theoryStep < totalTheorySteps - 1 ? 'Далее' : (totalTasks > 0 ? 'К заданиям!' : 'Завершить урок');
+        }
         if (stage === 'task') {
-            if (isAnswerChecked && isAnswerCorrect) return currentTaskIndex < totalTasks - 1 ? 'Далее' : 'Завершить урок';
+            if (isAnswerChecked && isAnswerCorrect) {
+                return currentTaskIndex < totalTasks - 1 ? 'Далее' : 'Завершить урок';
+            }
             return 'Проверить';
         }
         return 'Завершить';
-    }
+    };
     
     const handleFooterButtonClick = () => {
         if (stage === 'theory') {
-            if (theoryStep < totalTheorySteps - 1) handleNext();
-            else (totalTasks > 0 ? setStage('task') : handleCompleteLesson());
+            if (theoryStep < totalTheorySteps - 1) {
+                handleNext();
+            } else {
+                totalTasks > 0 ? setStage('task') : handleCompleteLesson();
+            }
         } else if (stage === 'task') {
-            if (!isAnswerChecked) handleCheckAnswer();
-            else if (isAnswerCorrect) handleNext();
+            if (!isAnswerChecked) {
+                handleCheckAnswer();
+            } else if (isAnswerCorrect) {
+                handleNext();
+            }
         }
     };
     

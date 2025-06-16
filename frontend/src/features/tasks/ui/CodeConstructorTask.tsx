@@ -77,7 +77,7 @@ export const CodeConstructorTask = ({ task, isAnswerChecked, onSelectAnswer }: C
                                     key={block.id}
                                     layoutId={`constructor-block-${block.id}`}
                                     onClick={() => handleBuiltBlockClick(block)}
-                                    className="bg-primary/20 border border-primary text-primary px-3 py-1.5 rounded-md cursor-pointer shadow-lg shadow-primary/20"
+                                    className="bg-primary/20 border border-primary text-gray-300 px-3 py-1.5 rounded-md cursor-pointer shadow-lg shadow-primary/20"
                                     initial={{ opacity: 0, y: -20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 20 }}

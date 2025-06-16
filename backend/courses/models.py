@@ -7,7 +7,9 @@ class Course(models.Model):
     image_url = models.URLField(max_length=255, blank=True, null=True, verbose_name="URL обложки")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован")
     class Meta:
-        verbose_name = "Курс"; verbose_name_plural = "Курсы"; ordering = ['title']
+        verbose_name = "Курс"
+        verbose_name_plural = "Курсы"
+        ordering = ['title']
     def __str__(self): return self.title
 
 class Skill(models.Model):
@@ -16,7 +18,9 @@ class Skill(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name="Родительский навык")
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
     class Meta:
-        verbose_name = "Навык"; verbose_name_plural = "Навыки"; ordering = ['order']
+        verbose_name = "Навык"
+        verbose_name_plural = "Навыки"
+        ordering = ['order']
     def __str__(self): return f"{self.course.title} -> {self.title}"
 
 class Lesson(models.Model):
@@ -26,7 +30,9 @@ class Lesson(models.Model):
     xp_reward = models.PositiveIntegerField(default=10, verbose_name="Награда в XP")
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
     class Meta:
-        verbose_name = "Урок"; verbose_name_plural = "Уроки"; ordering = ['skill', 'order']
+        verbose_name = "Урок"
+        verbose_name_plural = "Уроки"
+        ordering = ['skill', 'order']
     def __str__(self): return self.title
 
 class Task(models.Model):
@@ -46,7 +52,8 @@ class Task(models.Model):
     code_template = models.TextField(blank=True, null=True, verbose_name="Шаблон кода")
     
     class Meta:
-        verbose_name = "Задание"; verbose_name_plural = "Задания"
+        verbose_name = "Задание"
+        verbose_name_plural = "Задания"
     def __str__(self): return f"Задание к уроку: {self.lesson.title}"
 
 class Hint(models.Model):
@@ -55,7 +62,9 @@ class Hint(models.Model):
     xp_penalty = models.PositiveIntegerField(default=1, verbose_name="Штраф в XP за использование")
     order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
     class Meta:
-        verbose_name = "Подсказка"; verbose_name_plural = "Подсказки"; ordering = ['order']
+        verbose_name = "Подсказка"
+        verbose_name_plural = "Подсказки"
+        ordering = ['order']
     def __str__(self): return f"Подсказка {self.order} к заданию"
 
 class UserProgress(models.Model):
@@ -63,7 +72,9 @@ class UserProgress(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name="Урок")
     completed_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата завершения")
     class Meta:
-        verbose_name = "Прогресс пользователя"; verbose_name_plural = "Прогрессы пользователей"; unique_together = ('user', 'lesson')
+        verbose_name = "Прогресс пользователя"
+        verbose_name_plural = "Прогрессы пользователей"
+        unique_together = ('user', 'lesson')
     def __str__(self): return f"Прогресс {self.user.username} по уроку '{self.lesson.title}'"
 
 class Badge(models.Model):
@@ -72,7 +83,8 @@ class Badge(models.Model):
     code = models.CharField(max_length=50, unique=True, verbose_name="Код бейджа")
     image_url = models.URLField(max_length=255, verbose_name="URL иконки бейджа")
     class Meta:
-        verbose_name = "Бейдж"; verbose_name_plural = "Бейджи"
+        verbose_name = "Бейдж"
+        verbose_name_plural = "Бейджи"
     def __str__(self): return self.title
 
 class UserBadge(models.Model):
@@ -80,5 +92,7 @@ class UserBadge(models.Model):
     badge = models.ForeignKey(Badge, on_delete=models.CASCADE, verbose_name="Бейдж")
     awarded_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата получения")
     class Meta:
-        verbose_name = "Бейдж пользователя"; verbose_name_plural = "Бейджи пользователей"; unique_together = ('user', 'badge')
+        verbose_name = "Бейдж пользователя"
+        verbose_name_plural = "Бейджи пользователей"
+        unique_together = ('user', 'badge')
     def __str__(self): return f"Бейдж '{self.badge.title}' пользователя {self.user.username}"
