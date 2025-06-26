@@ -1,4 +1,4 @@
-import type { Task } from "../../../shared/types/course";
+import type { Task, MultipleChoiceOptions } from "../../../shared/types/course";
 
 interface MultipleChoiceTaskProps {
     task: Task;
@@ -8,12 +8,13 @@ interface MultipleChoiceTaskProps {
     onSelectAnswer: (answer: string) => void;
 }
 
+const isMultipleChoiceOptions = (options: any): options is MultipleChoiceOptions => {
+    return options && typeof options === 'object' && !Array.isArray(options.options);
+};
+
 export const MultipleChoiceTask = ({ task, selectedAnswer, isAnswerChecked, correctAnswer, onSelectAnswer }: MultipleChoiceTaskProps) => {
     
     const handleClick = (key: string) => {
-        // --- ОТЛАДОЧНЫЙ ЛОГ ---
-        console.log(`[MultipleChoiceTask] Клик по варианту: ${key}. isAnswerChecked: ${isAnswerChecked}`);
-        
         if (!isAnswerChecked) {
             onSelectAnswer(key);
         }
@@ -32,17 +33,18 @@ export const MultipleChoiceTask = ({ task, selectedAnswer, isAnswerChecked, corr
         return 'border-border opacity-50 pointer-events-none';
     };
 
+    const options = isMultipleChoiceOptions(task.options) ? task.options : {};
+
     return (
         <div className="space-y-3">
-            {task.options && Object.entries(task.options).map(([key, value]) => (
+            {Object.entries(options).map(([key, value]) => (
                 <div 
                     key={key} 
                     onClick={() => handleClick(key)} 
-                    className={`p-4 border rounded-lg transition-all text-center ${getOptionStyle(key)} ${isAnswerChecked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`p-4 border rounded-lg transition-all flex items-center gap-4 ${getOptionStyle(key)} ${isAnswerChecked ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                    {/* Добавляем букву варианта для ясности */}
-                    <span className="font-bold mr-3 py-1 px-2.5 bg-surface border border-border rounded-md">{key}</span>
-                    {value}
+                    <span className="font-bold py-1 px-2.5 bg-surface border border-border rounded-md">{key}</span>
+                    <span>{value}</span>
                 </div>
             ))}
         </div>

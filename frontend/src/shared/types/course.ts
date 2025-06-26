@@ -6,6 +6,8 @@ export interface Hint {
     xp_penalty: number;
 }
 
+// export interface Hint { id: number; text: string; xp_penalty: number; }
+
 export type MultipleChoiceOptions = Record<string, string>;
 export type ConstructorOptions = { options: string[] };
 
@@ -16,6 +18,7 @@ export interface Task {
     options: MultipleChoiceOptions | ConstructorOptions | null;
     correct_answer: string;
     code_template?: string | null;
+    time_limit?: number | null; // <-- ДОБАВЛЯЕМ ЭТО ПОЛЕ
     hints: Hint[];
 }
 
@@ -90,4 +93,17 @@ export interface Friendship {
     to_user: Friend;
     status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
     created_at: string;
+}
+// ... (все предыдущие типы)
+// --- НОВЫЙ ТИП ДЛЯ ДЕТАЛЬНОГО ПРОФИЛЯ ---
+export interface UserProfile {
+    id: number;
+    username: string;
+    avatar?: string;
+    xp: number;
+    streak: number;
+    last_activity_date: string | null;
+    user_badges: UserBadge[];
+    friends_count: number;
+    friendship_status: 'not_friends' | 'friends' | 'request_sent' | 'request_received' | 'self' | null;
 }

@@ -1,13 +1,17 @@
+import re
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import User, Friendship
-from .serializers import UserSerializer, FriendshipSerializer, FriendSerializer
+from .serializers import UserSerializer, FriendshipSerializer, FriendSerializer, UserProfileSerializer # <-- Добавляем новый
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework.filters import SearchFilter
 
 class UserSearchView(generics.ListAPIView):
+    """
+    Представление для поиска пользователей по имени (username) и почте (email).
+    """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FriendSerializer 
     filter_backends = [SearchFilter]
@@ -19,15 +23,34 @@ class UserSearchView(generics.ListAPIView):
     def get_serializer_context(self):
         return {'request': self.request}
 
+# --- НОВЫЙ VIEW ---
+class UserProfileView(generics.RetrieveAPIView):
+    """
+    Представление для получения публичной информации о пользователе по его ID.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer 
+    lookup_field = 'id'
+
+    def get_serializer_context(self):
+        """Передаем request в контекст сериализатора."""
+        return {'request': self.request}
+
 
 class LeaderboardView(generics.ListAPIView):
+    """
+    Представление для получения таблицы лидеров.
+    """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
+    
     def get_queryset(self):
         return User.objects.order_by('-xp')[:100]
 
 
 class FriendshipViewSet(viewsets.GenericViewSet):
+    """ViewSet для управления запросами в друзья."""
     permission_classes = [permissions.IsAuthenticated]
     queryset = Friendship.objects.all()
     serializer_class = FriendshipSerializer

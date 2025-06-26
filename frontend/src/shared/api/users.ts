@@ -1,26 +1,20 @@
 import apiClient from "./axios";
 import type { UserBadge, Friendship, Friend } from "../types/course";
+import type { UserProfile } from "../types/course"; // <-- Импортируем новый тип
+ // <-- Импортируем новый тип
 
-// Этот тип остается для таблицы лидеров
+
+export interface User {
+    id: number; email: string; username: string; avatar?: string; xp: number; streak: number; last_activity_date: string | null; user_badges: UserBadge[]; friends: Friend[];
+}
 export interface LeaderboardUser {
-    id: number;
-    username: string;
-    avatar?: string;
-    xp: number;
-    user_badges: UserBadge[];
+    id: number; username: string; avatar?: string; xp: number; user_badges: UserBadge[];
 }
-
-// Этот тип мы используем для друзей и для поиска
-export type { Friend }; 
-
 export interface FriendRequestsResponse {
-    incoming: Friendship[];
-    outgoing: Friendship[];
+    incoming: Friendship[]; outgoing: Friendship[];
 }
-
 export interface ProfileUpdateData {
-    username?: string;
-    avatar?: File;
+    username?: string; avatar?: File;
 }
 
 export const getLeaderboard = async (): Promise<LeaderboardUser[]> => {
@@ -28,10 +22,7 @@ export const getLeaderboard = async (): Promise<LeaderboardUser[]> => {
     return response.data;
 };
 
-// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-// Функция теперь обещает вернуть массив Friend[]
 export const searchUsers = async (query: string): Promise<Friend[]> => {
-    // И мы указываем, что ожидаем получить Friend[] от API
     const response = await apiClient.get<Friend[]>(`/users/search/?search=${query}`);
     return response.data;
 };
@@ -59,10 +50,6 @@ export const removeFriend = async (userId: number): Promise<void> => {
     await apiClient.post(`/users/friendship/remove/${userId}/`);
 };
 
-// Полный тип User для обновления профиля
-export interface User {
-    id: number; email: string; username: string; avatar?: string; xp: number; streak: number; last_activity_date: string | null; user_badges: UserBadge[]; friends: Friend[];
-}
 export const updateProfile = async (data: ProfileUpdateData): Promise<User> => {
     const formData = new FormData();
     if (data.username) { formData.append('username', data.username); }
@@ -72,3 +59,8 @@ export const updateProfile = async (data: ProfileUpdateData): Promise<User> => {
     });
     return response.data;
 };
+
+export const getUserProfile = async (userId: number): Promise<UserProfile> => {
+    const response = await apiClient.get<UserProfile>(`/users/${userId}/`);
+    return response.data;
+}

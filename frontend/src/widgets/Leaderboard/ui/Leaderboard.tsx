@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getLeaderboard, type LeaderboardUser } from "../../../shared/api/users";
 import { useAuthStore } from "../../../stores/authStore";
 import { StarIcon } from "@heroicons/react/24/solid";
+import { Link } from 'react-router-dom';
 
 const LeaderboardRow = ({ user, rank }: { user: LeaderboardUser, rank: number }) => {
     const currentUser = useAuthStore((state) => state.user);
@@ -21,16 +22,18 @@ const LeaderboardRow = ({ user, rank }: { user: LeaderboardUser, rank: number })
                     {rank <= 3 ? <StarIcon className="h-5 w-5" /> : rank}
                 </span>
             </td>
-            <td className="p-4 flex items-center gap-4">
-                <img 
-                    src={user.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.username}`} 
-                    alt={user.username}
-                    className="w-12 h-12 rounded-full border-2 border-border"
-                />
-                <div>
-                    <p className="font-bold text-text-primary">{user.username}</p>
-                    <p className="text-sm text-text-secondary">{user.user_badges.length} наград</p>
-                </div>
+            <td className="p-4">
+                <Link to={`/users/${user.id}`} className="flex items-center gap-4 group">
+                    <img 
+                        src={user.avatar || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.username}`} 
+                        alt={user.username}
+                        className="w-12 h-12 rounded-full border-2 border-border group-hover:border-primary transition-colors"
+                    />
+                    <div>
+                        <p className="font-bold text-text-primary group-hover:text-primary transition-colors">{user.username}</p>
+                        <p className="text-sm text-text-secondary">{user.user_badges.length} наград</p>
+                    </div>
+                </Link>
             </td>
             <td className="p-4 text-right">
                 <p className="font-bold text-lg text-primary">{user.xp.toLocaleString('ru-RU')} XP</p>
