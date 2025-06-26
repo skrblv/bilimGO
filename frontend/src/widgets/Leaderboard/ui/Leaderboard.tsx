@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getLeaderboard, type LeaderboardUser } from "../../../shared/api/users";
+import { getLeaderboard, } from "../../../shared/api/users";
+import type { LeaderboardUser } from "../../../shared/types/course";
 import { useAuthStore } from "../../../stores/authStore";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { Link } from 'react-router-dom';

@@ -6,8 +6,6 @@ export interface Hint {
     xp_penalty: number;
 }
 
-// export interface Hint { id: number; text: string; xp_penalty: number; }
-
 export type MultipleChoiceOptions = Record<string, string>;
 export type ConstructorOptions = { options: string[] };
 
@@ -18,20 +16,18 @@ export interface Task {
     options: MultipleChoiceOptions | ConstructorOptions | null;
     correct_answer: string;
     code_template?: string | null;
-    time_limit?: number | null; // <-- ДОБАВЛЯЕМ ЭТО ПОЛЕ
+    time_limit?: number | null;
     hints: Hint[];
 }
 
 // --- Типы для контента урока ---
 
 export interface ContentBlock {
-    type: 'text' | 'code' | 'image' | 'details' | 'alert' | 'divider';
+    type: 'text' | 'code' | 'image';
     content: string;
     language?: string;
     url?: string;
     caption?: string;
-    summary?: string;
-    style?: 'info' | 'success' | 'warning' | 'danger';
 }
 
 export interface Lesson {
@@ -77,7 +73,7 @@ export interface UserBadge {
     awarded_at: string;
 }
 
-// --- Типы для социальных функций ---
+// --- Типы для пользователей и социальных функций ---
 
 export interface Friend {
     id: number;
@@ -94,8 +90,21 @@ export interface Friendship {
     status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
     created_at: string;
 }
-// ... (все предыдущие типы)
-// --- НОВЫЙ ТИП ДЛЯ ДЕТАЛЬНОГО ПРОФИЛЯ ---
+
+// Полный тип для залогиненного пользователя (в authStore)
+export interface User {
+    id: number;
+    email: string;
+    username: string;
+    avatar?: string;
+    xp: number;
+    streak: number;
+    last_activity_date: string | null;
+    user_badges: UserBadge[];
+    friends: Friend[];
+}
+
+// Тип для публичного профиля
 export interface UserProfile {
     id: number;
     username: string;
@@ -106,4 +115,9 @@ export interface UserProfile {
     user_badges: UserBadge[];
     friends_count: number;
     friendship_status: 'not_friends' | 'friends' | 'request_sent' | 'request_received' | 'self' | null;
+}
+
+// Тип для таблицы лидеров (может быть таким же как Friend, но лучше выделить)
+export interface LeaderboardUser extends Friend {
+    user_badges: UserBadge[];
 }

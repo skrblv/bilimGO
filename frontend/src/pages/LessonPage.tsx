@@ -49,20 +49,10 @@ export const LessonPage = () => {
             const fetchLessonData = async () => {
                 try {
                     const courseData = await getCourseById(courseId);
-                    const foundLesson = courseData.skills
-                        .flatMap(skill => skill.lessons)
-                        .find(l => l.id === Number(lessonId));
-                    
-                    if (foundLesson) {
-                        setLesson(foundLesson);
-                    } else {
-                        navigate(`/courses/${courseId}`);
-                    }
-                } catch (error) {
-                    navigate(`/courses/${courseId}`);
-                } finally {
-                    setPageIsLoading(false);
-                }
+                    const foundLesson = courseData.skills.flatMap(skill => skill.lessons).find(l => l.id === Number(lessonId));
+                    if (foundLesson) { setLesson(foundLesson); } else { navigate(`/courses/${courseId}`); }
+                } catch (error) { navigate(`/courses/${courseId}`); } 
+                finally { setPageIsLoading(false); }
             };
             fetchLessonData();
         }
@@ -81,15 +71,11 @@ export const LessonPage = () => {
 
     const handleNext = async () => {
         if (stage === 'theory') {
-            if (theoryStep < totalTheorySteps - 1) {
-                setTheoryStep(p => p + 1);
-            } else {
-                setStage(totalTasks > 0 ? 'task' : 'completed');
-            }
+            if (theoryStep < totalTheorySteps - 1) setTheoryStep(p => p + 1);
+            else setStage(totalTasks > 0 ? 'task' : 'completed');
         } else if (stage === 'task' && isAnswerCorrect) {
-            if (currentTaskIndex < totalTasks - 1) {
-                setCurrentTaskIndex(p => p + 1);
-            } else {
+            if (currentTaskIndex < totalTasks - 1) setCurrentTaskIndex(p => p + 1);
+            else {
                 setStage('completed');
                 await handleCompleteLesson();
             }
@@ -97,11 +83,8 @@ export const LessonPage = () => {
     };
 
     const handleBack = () => {
-        if (stage === 'task' && currentTaskIndex === 0) {
-            setStage('theory');
-        } else if (stage === 'theory' && theoryStep > 0) {
-            setTheoryStep(p => p - 1);
-        }
+        if (stage === 'task' && currentTaskIndex === 0) setStage('theory');
+        if (stage === 'theory' && theoryStep > 0) setTheoryStep(p => p - 1);
     };
 
     const handleCheckAnswer = async () => {
@@ -111,9 +94,7 @@ export const LessonPage = () => {
             const response = await checkAnswer(currentTask.id, selectedAnswer);
             setIsAnswerChecked(true);
             setIsAnswerCorrect(response.is_correct);
-            if (!response.is_correct) {
-                setCorrectAnswerFromAPI(response.correct_answer ?? null);
-            }
+            if (!response.is_correct) setCorrectAnswerFromAPI(response.correct_answer ?? null);
         } catch(e) { console.error(e); } 
         finally { setApiIsLoading(false); }
     };
@@ -139,12 +120,6 @@ export const LessonPage = () => {
     };
 
     const renderTaskInput = (task: Task) => {
-                console.log("%c[LessonPage] Рендеринг задания:", "color: yellow; font-weight: bold;", task);
-        if (task.task_type === 'speed_typing') {
-            console.log(`- Тип: speed_typing`);
-            console.log(`- Шаблон кода (code_template):`, task.code_template);
-            console.log(`- Лимит времени (time_limit):`, task.time_limit);
-        }
         switch(task.task_type) {
             case 'multiple_choice': return <MultipleChoiceTask task={task} selectedAnswer={selectedAnswer} isAnswerChecked={isAnswerChecked} correctAnswer={correctAnswerFromAPI || task.correct_answer} onSelectAnswer={setSelectedAnswer} />;
             case 'text_input': return <TextInputTask isAnswerChecked={isAnswerChecked} onSelectAnswer={setSelectedAnswer} />;
@@ -155,7 +130,6 @@ export const LessonPage = () => {
             case 'speed_typing': return <SpeedTypingTask task={task} onComplete={(isSuccess) => { setIsAnswerChecked(true); setIsAnswerCorrect(isSuccess); }} />;
             default: return <p>Неизвестный тип задания: {task.task_type}</p>;
         }
-        
     };
     
     if (pageIsLoading || !lesson) {
@@ -194,71 +168,28 @@ export const LessonPage = () => {
                     <motion.div className="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full" initial={{ width: 0 }} animate={{ width: `${progressPercentage}%` }} transition={{ ease: "easeOut", duration: 0.5 }} />
                 </div>
             </header>
-
             <main className="flex-grow flex flex-col items-center justify-center p-4 md:p-8">
                 <div className="w-full max-w-3xl">
                     <AnimatePresence mode="wait">
-                        {stage === 'theory' && (
-                            <motion.div key={`theory-${theoryStep}`} initial={{opacity: 0, x: 50}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: -50}} transition={{duration: 0.3}}>
-                                <h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-text-primary">{lesson.title}</h1>
-                                <TheoryBlock blocks={lesson.theory_content} step={theoryStep} />
-                            </motion.div>
-                        )}
-                        {stage === 'task' && currentTask && (
-                            <motion.div key={`task-${currentTask.id}`} initial={{opacity: 0, x: 50}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: -50}} transition={{duration: 0.3}}>
-                                <h2 className="text-2xl font-bold mb-6 text-center text-text-primary">{currentTask.question}</h2>
-                                {renderTaskInput(currentTask)}
-                            </motion.div>
-                        )}
-                        {stage === 'completed' && (
-                             <motion.div key="completed" initial={{opacity: 0, scale: 0.8}} animate={{opacity: 1, scale: 1}} className="text-center">
-                                <h2 className="text-3xl font-bold text-success">Все задания выполнены!</h2>
-                                <p className="text-text-secondary mt-2">Вы готовы завершить урок.</p>
-                                <Button className='mt-6 max-w-xs mx-auto' onClick={handleCompleteLesson} isLoading={apiIsLoading}>Завершить и получить награду</Button>
-                            </motion.div>
-                        )}
+                        {stage === 'theory' && (<motion.div key={`theory-${theoryStep}`} initial={{opacity: 0, x: 50}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: -50}} transition={{duration: 0.3}}><h1 className="text-3xl md:text-4xl font-bold text-center mb-8 text-text-primary">{lesson.title}</h1><TheoryBlock blocks={lesson.theory_content} step={theoryStep} /></motion.div>)}
+                        {stage === 'task' && currentTask && (<motion.div key={`task-${currentTask.id}`} initial={{opacity: 0, x: 50}} animate={{opacity: 1, x: 0}} exit={{opacity: 0, x: -50}} transition={{duration: 0.3}}><h2 className="text-2xl font-bold mb-6 text-center text-text-primary">{currentTask.question}</h2>{renderTaskInput(currentTask)}</motion.div>)}
+                        {stage === 'completed' && (<motion.div key="completed" initial={{opacity: 0, scale: 0.8}} animate={{opacity: 1, scale: 1}} className="text-center"><h2 className="text-3xl font-bold text-success">Все задания выполнены!</h2><p className="text-text-secondary mt-2">Вы готовы завершить урок.</p><Button className='mt-6 max-w-xs mx-auto' onClick={handleCompleteLesson} isLoading={apiIsLoading}>Завершить и получить награду</Button></motion.div>)}
                     </AnimatePresence>
                 </div>
             </main>
-            
             {stage !== 'completed' && (
                 <footer className={`sticky bottom-0 p-4 border-t ${isAnswerChecked && !isAnswerCorrect ? 'bg-danger/20 border-danger' : (isAnswerChecked && isAnswerCorrect ? 'bg-success/10 border-success' : 'bg-surface border-border')}`}>
                     <div className="max-w-3xl mx-auto flex items-center justify-between">
-                        <Button variant="secondary" onClick={handleBack} className="!w-auto" disabled={(stage === 'theory' && theoryStep === 0) || (stage === 'task' && isAnswerChecked)}>
-                           <ChevronLeftIcon className="h-5 w-5"/>
-                        </Button>
-                        
+                        <Button variant="secondary" onClick={handleBack} className="!w-auto" disabled={(stage === 'theory' && theoryStep === 0) || (stage === 'task' && isAnswerChecked)}> <ChevronLeftIcon className="h-5 w-5"/></Button>
                         <div className="text-center h-6">
-                            {isAnswerChecked && !isAnswerCorrect && currentTask?.task_type !== 'speed_typing' && (
-                                 <motion.div initial={{y:10, opacity:0}} animate={{y:0, opacity:1}} className="flex justify-center">
-                                    <Button onClick={handleTryAgain} variant="secondary" className="!w-auto !border-amber-500 !text-amber-500">
-                                        <ArrowUturnLeftIcon className="h-5 w-5 mr-2" />
-                                        Попробовать снова
-                                    </Button>
-                                </motion.div>
-                            )}
+                            {isAnswerChecked && !isAnswerCorrect && currentTask?.task_type !== 'speed_typing' && (<motion.div initial={{y:10, opacity:0}} animate={{y:0, opacity:1}} className="flex justify-center"><Button onClick={handleTryAgain} variant="secondary" className="!w-auto !border-amber-500 !text-amber-500"><ArrowUturnLeftIcon className="h-5 w-5 mr-2" />Попробовать снова</Button></motion.div>)}
                             {isAnswerChecked && isAnswerCorrect && <motion.p initial={{y:10, opacity:0}} animate={{y:0, opacity:1}} className="text-success font-bold">Правильно!</motion.p>}
                         </div>
-
-                        <Button 
-                            onClick={handleFooterButtonClick} 
-                            className={`!w-auto ${isAnswerChecked && isAnswerCorrect ? '!bg-success hover:!bg-green-700' : ''}`}
-                            disabled={apiIsLoading || (stage === 'task' && ((!selectedAnswer && currentTask?.task_type !== 'speed_typing') || (isAnswerChecked && !isAnswerCorrect)))}
-                        >
-                            {getFooterButtonText()}
-                            <ChevronRightIcon className="h-5 w-5 ml-2"/>
-                        </Button>
+                        <Button onClick={handleFooterButtonClick} className={`!w-auto ${isAnswerChecked && isAnswerCorrect ? '!bg-success hover:!bg-green-700' : ''}`} disabled={apiIsLoading || (stage === 'task' && ((!selectedAnswer && currentTask?.task_type !== 'speed_typing') || (isAnswerChecked && !isAnswerCorrect)))}>{getFooterButtonText()}<ChevronRightIcon className="h-5 w-5 ml-2"/></Button>
                     </div>
                 </footer>
             )}
-
-            <Modal isOpen={showCompletionModal} onClose={() => navigate(`/courses/${courseId}`)} title="Урок пройден!">
-                <div className="text-center py-4">
-                    <p className="text-7xl mb-4">🎉</p>
-                    <p className="text-text-primary text-lg">{completionMessage}</p>
-                    <Button className="mt-6" onClick={() => navigate(`/courses/${courseId}`)}>Вернуться к курсу</Button>
-                </div>
-            </Modal>
+            <Modal isOpen={showCompletionModal} onClose={() => navigate(`/courses/${courseId}`)} title="Урок пройден!"><div className="text-center py-4"><p className="text-7xl mb-4">🎉</p><p className="text-text-primary text-lg">{completionMessage}</p><Button className="mt-6" onClick={() => navigate(`/courses/${courseId}`)}>Вернуться к курсу</Button></div></Modal>
         </div>
     );
 };

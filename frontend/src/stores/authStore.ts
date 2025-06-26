@@ -1,20 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import apiClient from '../shared/api/axios';
-import type { UserBadge, Friend } from '../shared/types/course';
-
-// Полный интерфейс пользователя, как его видит фронтенд
-interface User {
-    id: number;
-    email: string;
-    username: string;
-    avatar?: string;
-    xp: number;
-    streak: number;
-    last_activity_date: string | null;
-    user_badges: UserBadge[];
-    friends: Friend[];
-}
+// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+// Добавляем импорт типа 'User'
+import type { User, UserBadge, Friend } from '../shared/types/course';
 
 // Интерфейс для локального прогресса
 interface UserProgress {
@@ -25,7 +14,7 @@ interface UserProgress {
 interface AuthState {
     accessToken: string | null;
     refreshToken: string | null;
-    user: User | null;
+    user: User | null; // Этот тип теперь импортирован
     progress: UserProgress;
     isAuthenticated: boolean;
     isInitialized: boolean;
@@ -78,7 +67,6 @@ export const useAuthStore = create<AuthState>()(
                     const response = await apiClient.get<User>('auth/users/me/');
                     const userData = response.data;
                     
-                    // "Ломаем" кэш аватара при первой инициализации
                     if (userData.avatar) {
                         userData.avatar = `${userData.avatar}?t=${new Date().getTime()}`;
                     }
@@ -101,8 +89,6 @@ export const useAuthStore = create<AuthState>()(
                     const response = await apiClient.get<User>('auth/users/me/');
                     const userData = response.data;
                     
-                    // --- ВОТ ИСПРАВЛЕНИЕ ДЛЯ КЭША АВАТАРА ---
-                    // Добавляем к URL параметр с текущим временем, чтобы "сломать" кэш
                     if (userData.avatar) {
                         userData.avatar = `${userData.avatar}?t=${new Date().getTime()}`;
                     }

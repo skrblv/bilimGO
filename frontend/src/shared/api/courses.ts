@@ -2,13 +2,14 @@ import apiClient from "./axios";
 import type { Course, CourseDetail } from "../types/course";
 
 interface LessonCompletionResponse {
-    user: object;
     message: string;
+    xp_earned: number;
+    new_badges_count: number;
 }
 
 interface HintResponse {
     hint: { text: string };
-    message: string; // Добавляем сообщение о списании XP
+    message: string;
 }
 
 interface AnswerCheckResponse {

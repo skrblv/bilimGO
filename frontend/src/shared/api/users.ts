@@ -1,24 +1,41 @@
 import apiClient from "./axios";
-import type { UserBadge, Friendship, Friend } from "../types/course";
-import type { UserProfile } from "../types/course"; // <-- Импортируем новый тип
- // <-- Импортируем новый тип
+import type { User, UserBadge, Friendship, Friend, UserProfile } from "../types/course";
 
+export type { UserProfile, Friend, Friendship, User };
 
-export interface User {
-    id: number; email: string; username: string; avatar?: string; xp: number; streak: number; last_activity_date: string | null; user_badges: UserBadge[]; friends: Friend[];
-}
-export interface LeaderboardUser {
-    id: number; username: string; avatar?: string; xp: number; user_badges: UserBadge[];
-}
 export interface FriendRequestsResponse {
-    incoming: Friendship[]; outgoing: Friendship[];
-}
-export interface ProfileUpdateData {
-    username?: string; avatar?: File;
+    incoming: Friendship[];
+    outgoing: Friendship[];
 }
 
-export const getLeaderboard = async (): Promise<LeaderboardUser[]> => {
-    const response = await apiClient.get<LeaderboardUser[]>('/users/leaderboard/');
+export interface ProfileUpdateData {
+    username?: string;
+    avatar?: File;
+}
+
+export interface RadarStat {
+    name: string;
+    value: number;
+}
+export type HeatmapStat = [string, number];
+
+export interface CourseProgressStat {
+    id: number;
+    title: string;
+    completed: number;
+    total: number;
+    percentage: number;
+    xp_earned: number;
+}
+
+export interface UserStats {
+    radar_chart: RadarStat[];
+    heatmap: HeatmapStat[];
+    courses_progress: CourseProgressStat[];
+}
+
+export const getLeaderboard = async (): Promise<Friend[]> => {
+    const response = await apiClient.get<Friend[]>('/users/leaderboard/');
     return response.data;
 };
 
@@ -63,4 +80,9 @@ export const updateProfile = async (data: ProfileUpdateData): Promise<User> => {
 export const getUserProfile = async (userId: number): Promise<UserProfile> => {
     const response = await apiClient.get<UserProfile>(`/users/${userId}/`);
     return response.data;
-}
+};
+
+export const getMyStats = async (): Promise<UserStats> => {
+    const response = await apiClient.get<UserStats>('/users/me/stats/');
+    return response.data;
+};
