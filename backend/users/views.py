@@ -107,6 +107,46 @@ class UserStatsView(APIView):
             'courses_progress': progress_data
         })
 
+class DashboardView(APIView):
+    """
+    Представление для получения сводной информации для главного дашборда.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        
+        # 1. Последний изучаемый курс
+        last_progress = UserProgress.objects.filter(user=user).order_by('-completed_at').first()
+        last_course_data = None
+        if last_progress:
+            course = last_progress.lesson.skill.course
+            total_lessons = Lesson.objects.filter(skill__course=course).count()
+            completed_lessons = UserProgress.objects.filter(user=user, lesson__skill__course=course).count()
+            percentage = round((completed_lessons / total_lessons) * 100) if total_lessons > 0 else 0
+            
+            last_course_data = {
+                'id': course.id,
+                'title': course.title,
+                'image_url': course.image_url,
+                'percentage': percentage
+            }
+            
+        # 2. Мини-таблица лидеров (топ-3)
+        top_3_users = User.objects.order_by('-xp')[:3]
+        leaderboard_data = UserSerializer(top_3_users, many=True, context={'request': request}).data
+        
+        # 3. Место текущего пользователя
+        # Находим всех пользователей с XP больше, чем у нашего, и прибавляем 1
+        higher_rank_count = User.objects.filter(xp__gt=user.xp).count()
+        user_rank = higher_rank_count + 1
+
+        return Response({
+            'last_course': last_course_data,
+            'leaderboard_top': leaderboard_data,
+            'user_rank': user_rank
+        })
+
 class FriendshipViewSet(viewsets.GenericViewSet):
     """ViewSet для управления запросами в друзья."""
     permission_classes = [permissions.IsAuthenticated]

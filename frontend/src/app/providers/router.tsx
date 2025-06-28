@@ -12,6 +12,8 @@ import UserProfilePage from '../../pages/UserProfilePage';
 import { useAuthStore } from '../../stores/authStore';
 import { useEffect } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
+import { DashboardPage } from '../../pages/DashboardPage'; // <-- Импорт
+
 
 const AppGate = () => {
     const { isInitialized, initialize } = useAuthStore();
@@ -47,6 +49,7 @@ const router = createBrowserRouter([
         path: '/',
         element: <PrivateRouteWrapper />,
         children: [
+            { index: true, element: <DashboardPage /> },
             { index: true, element: <Navigate to="/courses" replace /> }, 
             { path: 'courses', element: <CoursesPage /> },
             { path: 'courses/:id', element: <CourseDetailPage /> },

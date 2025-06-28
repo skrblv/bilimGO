@@ -1,7 +1,32 @@
 import apiClient from "./axios";
-import type { User, UserBadge, Friendship, Friend, UserProfile } from "../types/course";
+import type { User, UserBadge, Friendship, Friend, UserProfile, LeaderboardUser } from "../types/course";
 
-export type { UserProfile, Friend, Friendship, User };
+export type { UserProfile, Friend, Friendship, User, LeaderboardUser };
+// ... (все импорты)
+
+// ... (все другие интерфейсы)
+
+// --- НОВЫЕ ТИПЫ ДЛЯ ДАШБОРДА ---
+export interface LastCourseInfo {
+    id: number;
+    title: string;
+    image_url: string | null;
+    percentage: number;
+}
+
+export interface DashboardData {
+    last_course: LastCourseInfo | null;
+    leaderboard_top: LeaderboardUser[];
+    user_rank: number;
+}
+
+// --- НОВАЯ ФУНКЦИЯ ---
+export const getDashboardData = async (): Promise<DashboardData> => {
+    const response = await apiClient.get<DashboardData>('/users/dashboard/');
+    return response.data;
+}
+
+// ... (остальные функции)
 
 export interface FriendRequestsResponse {
     incoming: Friendship[];

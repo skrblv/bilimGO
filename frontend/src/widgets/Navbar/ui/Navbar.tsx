@@ -25,12 +25,12 @@ export const Navbar = () => {
     }
 
     return (
-        <header className="bg-background border-b border-border sticky top-0 z-40">
+        <header className="bg-white border-b border-border sticky top-0 z-40">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Левая часть: Лого и основные ссылки */}
                     <div className="flex items-center gap-8">
-                        <Link to="/courses" className="text-primary font-bold text-xl">
+                        <Link to="/" className="text-primary font-bold text-xl">
                             EduPlatform
                         </Link>
                         <nav className="hidden md:flex items-center gap-4">
