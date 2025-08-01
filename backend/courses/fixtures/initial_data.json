@@ -1,0 +1,126 @@
+[
+  {
+    "model": "courses.course",
+    "pk": 1,
+    "fields": {
+      "title": "Основы Python",
+      "description": "Изучите один из самых популярных и востребованных языков программирования с нуля.",
+      "image_url": "https://i.imgur.com/r4r5h2n.png",
+      "is_published": true
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 2,
+    "fields": {
+      "title": "HTML: Структура веба",
+      "description": "Научитесь создавать каркас любого веб-сайта с помощью языка гипертекстовой разметки HTML.",
+      "image_url": "https://i.imgur.com/Q3c4z1N.png",
+      "is_published": true
+    }
+  },
+  {
+    "model": "courses.skill",
+    "pk": 1,
+    "fields": {
+      "course": 1,
+      "title": "Первое знакомство",
+      "parent": null,
+      "order": 1
+    }
+  },
+  {
+    "model": "courses.skill",
+    "pk": 2,
+    "fields": {
+      "course": 1,
+      "title": "Переменные и данные",
+      "parent": null,
+      "order": 2
+    }
+  },
+  {
+    "model": "courses.skill",
+    "pk": 3,
+    "fields": {
+      "course": 2,
+      "title": "Основы HTML",
+      "parent": null,
+      "order": 1
+    }
+  },
+  {
+    "model": "courses.lesson",
+    "pk": 1,
+    "fields": {
+      "skill": 1,
+      "title": "Что такое программирование?",
+      "theory_content": "[{\"type\": \"text\", \"content\": \"Программирование — это, по сути, общение с компьютером.\"}, {\"type\": \"code\", \"language\": \"python\", \"content\": \"print('Hello, World!')\"}]",
+      "xp_reward": 10,
+      "order": 1
+    }
+  },
+  {
+    "model": "courses.lesson",
+    "pk": 2,
+    "fields": {
+      "skill": 2,
+      "title": "Коробки для данных: переменные",
+      "theory_content": "[{\"type\": \"text\", \"content\": \"Переменные - это как подписанные коробки для данных.\"}, {\"type\": \"code\", \"language\": \"python\", \"content\": \"apples_count = 5\"}]",
+      "xp_reward": 15,
+      "order": 1
+    }
+  },
+  {
+    "model": "courses.lesson",
+    "pk": 3,
+    "fields": {
+      "skill": 3,
+      "title": "Знакомство с тегами",
+      "theory_content": "[{\"type\": \"text\", \"content\": \"HTML — это язык, который говорит браузеру, *что* показывать на странице.\"}, {\"type\": \"code\", \"language\": \"html\", \"content\": \"<h1>Это главный заголовок</h1>\"}]",
+      "xp_reward": 10,
+      "order": 1
+    }
+  },
+  {
+    "model": "courses.task",
+    "pk": 1,
+    "fields": {
+      "lesson": 1,
+      "task_type": "multiple_choice",
+      "question": "Какая команда используется в Python для вывода текста на экран?",
+      "options": "{\"A\": \"write()\", \"B\": \"print()\", \"C\": \"display()\"}",
+      "correct_answer": "B",
+      "code_template": null,
+      "time_limit": null
+    }
+  },
+  {
+    "model": "courses.task",
+    "pk": 2,
+    "fields": {
+      "lesson": 3,
+      "task_type": "constructor",
+      "question": "Соберите правильный HTML-код из блоков ниже.",
+      "options": "{\"options\": [\"<h1>\", \"Hello World\", \"</h1>\"]}",
+      "correct_answer": "<h1>Hello World</h1>",
+      "code_template": null,
+      "time_limit": null
+    }
+  },
+  {
+    "model": "courses.badge",
+    "pk": 1,
+    "fields": { "title": "Первый шаг", "description": "Завершить свой первый урок", "code": "FIRST_LESSON", "image_url": "https://img.icons8.com/plasticine/100/footprint-scanning.png" }
+  },
+  {
+    "model": "courses.badge",
+    "pk": 2,
+    "fields": { "title": "Стахановец", "description": "Поддерживать ударный режим 5 дней подряд", "code": "STREAK_5_DAYS", "image_url": "https://img.icons8.com/plasticine/100/confetti.png" }
+  },
+  {
+    "model": "courses.badge",
+    "pk": 3,
+    "fields": { "title": "Марафонец", "description": "Завершить 10 уроков", "code": "LESSONS_10", "image_url": "https://img.icons8.com/plasticine/100/finish-flag.png" }
+  }
+]

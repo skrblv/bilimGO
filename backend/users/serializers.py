@@ -2,6 +2,7 @@ from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from .models import User, Friendship
+from courses.models import UserProgress # Импортируем UserProgress
 from courses.serializers import UserBadgeSerializer
 from django.db.models import Q
 
@@ -26,26 +27,23 @@ class FriendSerializer(serializers.ModelSerializer):
             else: return 'request_received'
         return 'not_friends'
 
-# --- НОВЫЙ СЕРИАЛИЗАТОР ДЛЯ ПУБЛИЧНОГО ПРОФИЛЯ ---
 class UserProfileSerializer(serializers.ModelSerializer):
     user_badges = UserBadgeSerializer(many=True, read_only=True)
     friends_count = serializers.SerializerMethodField()
     friendship_status = serializers.SerializerMethodField()
+    completed_lessons_ids = serializers.SerializerMethodField() # Новое поле
 
     class Meta:
         model = User
         fields = (
             'id', 'username', 'avatar', 'xp', 'streak', 'last_activity_date', 
-            'user_badges', 'friends_count', 'friendship_status'
+            'user_badges', 'friends_count', 'friendship_status', 'completed_lessons_ids'
         )
 
     def get_friends_count(self, obj):
-        return Friendship.objects.filter(
-            (Q(from_user=obj) | Q(to_user=obj)) & Q(status=Friendship.Status.ACCEPTED)
-        ).count()
+        return Friendship.objects.filter((Q(from_user=obj) | Q(to_user=obj)) & Q(status=Friendship.Status.ACCEPTED)).count()
     
     def get_friendship_status(self, obj):
-        # Копируем логику из FriendSerializer
         request_user = self.context.get('request').user
         if not request_user or not request_user.is_authenticated or request_user == obj: return 'self'
         friendship = Friendship.objects.filter((Q(from_user=request_user, to_user=obj) | Q(from_user=obj, to_user=request_user))).first()
@@ -55,6 +53,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
             if friendship.from_user == request_user: return 'request_sent'
             else: return 'request_received'
         return 'not_friends'
+
+    def get_completed_lessons_ids(self, obj):
+        return UserProgress.objects.filter(user=obj).values_list('lesson_id', flat=True)
 
 class UserSerializer(BaseUserSerializer):
     user_badges = UserBadgeSerializer(many=True, read_only=True)

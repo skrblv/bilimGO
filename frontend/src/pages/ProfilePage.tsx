@@ -3,12 +3,13 @@ import { useAuthStore } from '../stores/authStore';
 import { Button } from '../shared/ui/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Tab } from '@headlessui/react';
-import { ArrowLeftOnRectangleIcon, PencilIcon, BookOpenIcon, FireIcon, TrophyIcon, ChartBarIcon, UserGroupIcon, UserPlusIcon, PresentationChartLineIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftOnRectangleIcon, PencilIcon, BookOpenIcon, FireIcon, TrophyIcon, ChartBarIcon, UserGroupIcon, UserPlusIcon, PresentationChartLineIcon, BeakerIcon } from '@heroicons/react/24/solid';
 import { BadgeCard } from '../entities/badge/ui/BadgeCard';
 import { FriendRequests } from '../widgets/FriendRequests/ui/FriendRequests';
 import type { Friend } from '../shared/types/course';
 import { removeFriend } from '../shared/api/users';
 import { MyProgress } from '../widgets/MyProgress/ui/MyProgress';
+import { ChallengesWidget } from '../widgets/ChallengesWidget/ui/ChallengesWidget'; // Импорт нового виджета
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -62,10 +63,14 @@ const ProfilePage = () => {
         { name: 'Друзья', icon: UserGroupIcon },
         { name: 'Запросы', icon: UserPlusIcon },
         { name: 'Прогресс', icon: PresentationChartLineIcon },
+        { name: 'Челленджи', icon: BeakerIcon },
     ];
     
     const handleTabChange = (index: number) => {
-        if (index === 1 || index === 2) { refreshUserData(); }
+        // Обновляем данные для вкладок, требующих свежей информации
+        if (index === 1 || index === 2 || index === 4) { 
+            refreshUserData(); 
+        }
         setSelectedIndex(index);
     }
 
@@ -100,7 +105,7 @@ const ProfilePage = () => {
                 <Tab.Group selectedIndex={selectedIndex} onChange={handleTabChange}>
                     <Tab.List className="flex space-x-1 rounded-xl bg-surface p-1 border border-border">
                         {TABS.map((tab) => (
-                            <Tab key={tab.name} className={({ selected }) => classNames('w-full rounded-lg py-2.5 text-sm font-medium leading-5', 'focus:outline-none', selected ? 'bg-primary text-background shadow' : 'text-gray-500 hover:bg-white/[0.12] hover:text-gray-800')}>
+                            <Tab key={tab.name} className={({ selected }) => classNames('w-full rounded-lg py-2.5 text-sm font-medium leading-5', 'focus:outline-none', selected ? 'bg-primary text-background shadow' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white')}>
                                 <span className='flex items-center justify-center gap-2'><tab.icon className="h-5 w-5" /> {tab.name}</span>
                             </Tab>
                         ))}
@@ -118,6 +123,9 @@ const ProfilePage = () => {
                         </Tab.Panel>
                         <Tab.Panel className="rounded-xl bg-surface border border-border p-3 sm:p-6 focus:outline-none min-h-[200px]">
                             <MyProgress />
+                        </Tab.Panel>
+                        <Tab.Panel className="rounded-xl bg-surface border border-border p-6 focus:outline-none min-h-[200px]">
+                            <ChallengesWidget />
                         </Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>

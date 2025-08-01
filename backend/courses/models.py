@@ -51,7 +51,6 @@ class Task(models.Model):
         verbose_name="Лимит времени (в секундах)",
         help_text="Используется для заданий 'Печать на скорость'."
     )
-    
     class Meta:
         verbose_name = "Задание"; verbose_name_plural = "Задания"
     def __str__(self): return f"Задание к уроку: {self.lesson.title}"
@@ -89,3 +88,25 @@ class UserBadge(models.Model):
     class Meta:
         verbose_name = "Бейдж пользователя"; verbose_name_plural = "Бейджи пользователей"; unique_together = ('user', 'badge')
     def __str__(self): return f"Бейдж '{self.badge.title}' пользователя {self.user.username}"
+
+class Challenge(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Ожидает ответа'
+        ACCEPTED = 'ACCEPTED', 'Принят'
+        DECLINED = 'DECLINED', 'Отклонен'
+        IN_PROGRESS = 'IN_PROGRESS', 'В процессе'
+        COMPLETED = 'COMPLETED', 'Завершен'
+    
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_challenges')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_challenges')
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    sender_time = models.PositiveIntegerField(null=True, blank=True, help_text="Время отправителя в секундах")
+    receiver_time = models.PositiveIntegerField(null=True, blank=True, help_text="Время получателя в секундах")
+    winner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='won_challenges')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Челлендж"; verbose_name_plural = "Челленджи"; ordering = ['-created_at']
+    def __str__(self): return f"Вызов от {self.sender} к {self.receiver} по уроку '{self.lesson.title}'"

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getUserProfile, sendFriendRequest, removeFriend } from '../shared/api/users';
-import type { UserProfile } from '../shared/types/course';
+import { getCourses, getCourseById } from '../shared/api/courses';
+import type { Lesson, UserProfile } from '../shared/types/course';
 import { Button } from '../shared/ui/Button';
+import { Modal } from '../shared/ui/Modal';
 import { useAuthStore } from '../stores/authStore';
-import { ArrowLeftIcon, UserPlusIcon, UserMinusIcon, FireIcon, TrophyIcon, UserGroupIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, UserPlusIcon, UserMinusIcon, FireIcon, TrophyIcon, UserGroupIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import { BadgeCard } from '../entities/badge/ui/BadgeCard';
+import { sendChallenge } from '../shared/api/challenges';
 
 const StatCard = ({ label, value, icon: Icon }: {label: string, value: string | number, icon: React.FC<any>}) => (
     <div className="bg-background p-4 rounded-lg flex flex-col items-center justify-center text-center border border-border">
@@ -21,6 +24,10 @@ const UserProfilePage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
     
+    const [showChallengeModal, setShowChallengeModal] = useState(false);
+    const [availableLessons, setAvailableLessons] = useState<Lesson[]>([]);
+    const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
+
     const { user: currentUser, refreshUserData } = useAuthStore();
     const navigate = useNavigate();
 
@@ -72,15 +79,59 @@ const UserProfilePage = () => {
         }
     };
 
-    // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+    const openChallengeModal = async () => {
+        if (!profile) return;
+        setActionLoading(true);
+        try {
+            const allCourses = await getCourses();
+            const allCoursesDetails = await Promise.all(allCourses.map(c => getCourseById(String(c.id))));
+            const allLessons = allCoursesDetails.flatMap(cd => cd.skills.flatMap(s => s.lessons));
+
+            const currentUserProgress = useAuthStore.getState().progress.completedLessons;
+            const friendProgress = profile.completed_lessons_ids || [];
+            
+            const commonLessons = allLessons.filter(
+                lesson => currentUserProgress.includes(lesson.id) && friendProgress.includes(lesson.id)
+            );
+            
+            setAvailableLessons(commonLessons);
+            setShowChallengeModal(true);
+        } catch (e) {
+            console.error("Failed to prepare challenge lessons", e);
+            alert("Не удалось загрузить список уроков для вызова.");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const handleSendChallenge = async () => {
+        if (!selectedLessonId || !profile) return;
+        setActionLoading(true);
+        try {
+            await sendChallenge(profile.id, selectedLessonId);
+            setShowChallengeModal(false);
+            alert("Вызов успешно отправлен!");
+            fetchProfile(profile.id);
+        } catch (e) {
+            console.error(e);
+            alert("Не удалось отправить вызов.");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
     const renderFriendButton = (): React.ReactNode => {
         if (!profile) return null;
-
         switch (profile.friendship_status) {
+            case 'friends':
+                return (
+                    <div className="flex flex-col sm:flex-row gap-2">
+                        <Button onClick={openChallengeModal} isLoading={actionLoading} className="w-full"><SparklesIcon className="h-5 w-5 mr-2" />Бросить вызов</Button>
+                        <Button onClick={handleFriendAction} isLoading={actionLoading} variant="secondary" className="w-full"><UserMinusIcon className="h-5 w-5 mr-2" />В друзьях</Button>
+                    </div>
+                );
             case 'not_friends':
                 return <Button onClick={handleFriendAction} isLoading={actionLoading} className="w-full"><UserPlusIcon className="h-5 w-5 mr-2" />Добавить в друзья</Button>;
-            case 'friends':
-                return <Button onClick={handleFriendAction} isLoading={actionLoading} variant="secondary" className="w-full"><UserMinusIcon className="h-5 w-5 mr-2" />Удалить из друзей</Button>;
             case 'request_sent':
                 return <Button className="w-full" disabled>Запрос отправлен</Button>;
             case 'request_received':
@@ -118,7 +169,7 @@ const UserProfilePage = () => {
                     <div className="flex-grow text-center sm:text-left">
                         <h1 className="text-3xl font-bold text-text-primary">{profile.username}</h1>
                         <p className="text-lg text-primary font-semibold mt-1">{profile.xp.toLocaleString('ru')} XP</p>
-                        <div className="mt-4 max-w-xs mx-auto sm:mx-0">
+                        <div className="mt-4 max-w-sm mx-auto sm:mx-0">
                             {renderFriendButton()}
                         </div>
                     </div>
@@ -144,6 +195,23 @@ const UserProfilePage = () => {
                     </div>
                 </div>
             )}
+            
+            <Modal isOpen={showChallengeModal} onClose={() => setShowChallengeModal(false)} title={`Вызов для ${profile.username}`}>
+                <div className="py-2">
+                    {availableLessons.length > 0 ? (
+                        <>
+                            <p className="text-text-secondary mb-4">Выберите общий пройденный урок для соревнования.</p>
+                            <select defaultValue="" className="w-full bg-background border border-border rounded-md px-3 py-2 text-text-primary focus:ring-2 focus:ring-primary focus:outline-none" onChange={(e) => setSelectedLessonId(Number(e.target.value))}>
+                                <option value="" disabled>-- Выберите урок --</option>
+                                {availableLessons.map(l => <option key={l.id} value={l.id}>{l.title}</option>)}
+                            </select>
+                            <Button className="mt-4" onClick={handleSendChallenge} disabled={!selectedLessonId || actionLoading} isLoading={actionLoading}>Отправить вызов</Button>
+                        </>
+                    ) : (
+                        <p className="text-text-secondary text-center">У вас пока нет общих пройденных уроков для вызова.</p>
+                    )}
+                </div>
+            </Modal>
         </div>
     );
 };

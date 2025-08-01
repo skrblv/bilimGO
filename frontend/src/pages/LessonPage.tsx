@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../shared/ui/Button';
 import { Modal } from '../shared/ui/Modal';
-import { XCircleIcon, CheckCircleIcon, ArrowUturnLeftIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import { XCircleIcon, CheckCircleIcon, ArrowUturnLeftIcon, ChevronLeftIcon, ChevronRightIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import type { Lesson, Task } from '../shared/types/course';
 import { completeLesson, checkAnswer, getCourseById } from '../shared/api/courses';
+import { sendChallenge, submitChallengeResult } from '../shared/api/challenges';
 import { useAuthStore } from '../stores/authStore';
 import { TheoryBlock } from '../widgets/TheoryBlock/ui/TheoryBlock';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -24,11 +25,13 @@ export const LessonPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const lessonFromState: Lesson | undefined = location.state?.lesson;
+    const challengeId: number | undefined = location.state?.challengeId;
 
-    const { refreshUserData, addCompletedLesson } = useAuthStore();
+    const { user, refreshUserData, addCompletedLesson } = useAuthStore();
     
-    const [lesson, setLesson] = useState<Lesson | null>(lessonFromState || null);
-    const [pageIsLoading, setPageIsLoading] = useState(!lessonFromState);
+    const hasFullLessonData = lessonFromState && 'theory_content' in lessonFromState;
+    const [lesson, setLesson] = useState<Lesson | null>(hasFullLessonData ? lessonFromState : null);
+    const [pageIsLoading, setPageIsLoading] = useState(!hasFullLessonData);
     
     const [stage, setStage] = useState<LessonStage>('theory');
     const [theoryStep, setTheoryStep] = useState(0);
@@ -43,20 +46,37 @@ export const LessonPage = () => {
     const [showCompletionModal, setShowCompletionModal] = useState(false);
     const [completionMessage, setCompletionMessage] = useState("");
 
+    const [showChallengeModal, setShowChallengeModal] = useState(false);
+    const [selectedFriend, setSelectedFriend] = useState<number | null>(null);
+    const [challengeStartTime, setChallengeStartTime] = useState<number | null>(null);
+
     useEffect(() => {
-        if (!lesson && courseId && lessonId) {
+        if (!hasFullLessonData && courseId && lessonId) {
             setPageIsLoading(true);
             const fetchLessonData = async () => {
                 try {
                     const courseData = await getCourseById(courseId);
                     const foundLesson = courseData.skills.flatMap(skill => skill.lessons).find(l => l.id === Number(lessonId));
-                    if (foundLesson) { setLesson(foundLesson); } else { navigate(`/courses/${courseId}`); }
-                } catch (error) { navigate(`/courses/${courseId}`); } 
-                finally { setPageIsLoading(false); }
+                    if (foundLesson) {
+                        setLesson(foundLesson);
+                    } else {
+                        navigate(`/courses/${courseId}`);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch lesson data on direct load", error);
+                    navigate(`/courses/${courseId}`);
+                } 
+                finally {
+                    setPageIsLoading(false);
+                }
             };
             fetchLessonData();
         }
-    }, [courseId, lessonId, lesson, navigate]);
+        
+        if (challengeId) {
+            setChallengeStartTime(Date.now());
+        }
+    }, [courseId, lessonId, hasFullLessonData, navigate, challengeId]);
 
     useEffect(() => {
         setIsAnswerChecked(false);
@@ -65,17 +85,21 @@ export const LessonPage = () => {
         setCorrectAnswerFromAPI(null);
     }, [currentTaskIndex, theoryStep]);
 
-    const totalTheorySteps = lesson?.theory_content?.length || 0;
-    const totalTasks = lesson?.tasks?.length || 0;
-    const currentTask = lesson?.tasks[currentTaskIndex];
+    const totalTheorySteps = lesson?.theory_content?.length ?? 0;
+    const totalTasks = lesson?.tasks?.length ?? 0;
+    const currentTask = (lesson && lesson.tasks) ? lesson.tasks[currentTaskIndex] : undefined;
 
     const handleNext = async () => {
         if (stage === 'theory') {
-            if (theoryStep < totalTheorySteps - 1) setTheoryStep(p => p + 1);
-            else setStage(totalTasks > 0 ? 'task' : 'completed');
+            if (theoryStep < totalTheorySteps - 1) {
+                setTheoryStep(p => p + 1);
+            } else {
+                setStage(totalTasks > 0 ? 'task' : 'completed');
+            }
         } else if (stage === 'task' && isAnswerCorrect) {
-            if (currentTaskIndex < totalTasks - 1) setCurrentTaskIndex(p => p + 1);
-            else {
+            if (currentTaskIndex < totalTasks - 1) {
+                setCurrentTaskIndex(p => p + 1);
+            } else {
                 setStage('completed');
                 await handleCompleteLesson();
             }
@@ -83,8 +107,11 @@ export const LessonPage = () => {
     };
 
     const handleBack = () => {
-        if (stage === 'task' && currentTaskIndex === 0) setStage('theory');
-        if (stage === 'theory' && theoryStep > 0) setTheoryStep(p => p - 1);
+        if (stage === 'task' && currentTaskIndex === 0) {
+            setStage('theory');
+        } else if (stage === 'theory' && theoryStep > 0) {
+            setTheoryStep(p => p - 1);
+        }
     };
 
     const handleCheckAnswer = async () => {
@@ -94,8 +121,13 @@ export const LessonPage = () => {
             const response = await checkAnswer(currentTask.id, selectedAnswer);
             setIsAnswerChecked(true);
             setIsAnswerCorrect(response.is_correct);
-            if (!response.is_correct) setCorrectAnswerFromAPI(response.correct_answer ?? null);
-        } catch(e) { console.error(e); } 
+            if (!response.is_correct) {
+                setCorrectAnswerFromAPI(response.correct_answer ?? null);
+            }
+        } catch(e) { 
+            console.error(e);
+            alert("Ошибка при проверке ответа");
+        } 
         finally { setApiIsLoading(false); }
     };
     
@@ -103,12 +135,19 @@ export const LessonPage = () => {
         if (!lessonId) return;
         setApiIsLoading(true);
         try {
+            if (challengeId && challengeStartTime) {
+                const endTime = Date.now();
+                const timeTaken = Math.round((endTime - challengeStartTime) / 1000);
+                await submitChallengeResult(challengeId, timeTaken);
+            }
             const response = await completeLesson(Number(lessonId));
             addCompletedLesson(Number(lessonId));
             await refreshUserData();
             setCompletionMessage(response.message);
             setShowCompletionModal(true);
-        } catch (err: any) { alert(err.response?.data?.message || 'Не удалось завершить урок'); } 
+        } catch (err: any) { 
+            alert(err.response?.data?.message || 'Не удалось завершить урок'); 
+        } 
         finally { setApiIsLoading(false); }
     };
 
@@ -117,6 +156,21 @@ export const LessonPage = () => {
         setIsAnswerCorrect(false);
         setSelectedAnswer("");
         setCorrectAnswerFromAPI(null);
+    };
+
+    const handleSendChallenge = async () => {
+        if (!selectedFriend || !lessonId) return;
+        setApiIsLoading(true);
+        try {
+            await sendChallenge(selectedFriend, Number(lessonId));
+            setShowChallengeModal(false);
+            alert("Вызов успешно отправлен!");
+        } catch (error) {
+            console.error("Failed to send challenge", error);
+            alert("Не удалось отправить вызов.");
+        } finally {
+            setApiIsLoading(false);
+        }
     };
 
     const renderTaskInput = (task: Task) => {
@@ -148,7 +202,7 @@ export const LessonPage = () => {
             return 'Проверить';
         }
         return 'Завершить';
-    }
+    };
     
     const handleFooterButtonClick = () => {
         if (stage === 'theory') {
@@ -167,7 +221,9 @@ export const LessonPage = () => {
                 <div className="w-full bg-surface rounded-full h-4 border border-border overflow-hidden">
                     <motion.div className="bg-gradient-to-r from-green-400 to-green-600 h-full rounded-full" initial={{ width: 0 }} animate={{ width: `${progressPercentage}%` }} transition={{ ease: "easeOut", duration: 0.5 }} />
                 </div>
+                {user && user.friends.length > 0 && !challengeId && (<Button variant="secondary" className="!w-auto !px-3" onClick={() => setShowChallengeModal(true)}><SparklesIcon className="h-5 w-5" /></Button>)}
             </header>
+
             <main className="flex-grow flex flex-col items-center justify-center p-4 md:p-8">
                 <div className="w-full max-w-3xl">
                     <AnimatePresence mode="wait">
@@ -177,6 +233,7 @@ export const LessonPage = () => {
                     </AnimatePresence>
                 </div>
             </main>
+            
             {stage !== 'completed' && (
                 <footer className={`sticky bottom-0 p-4 border-t ${isAnswerChecked && !isAnswerCorrect ? 'bg-danger/20 border-danger' : (isAnswerChecked && isAnswerCorrect ? 'bg-success/10 border-success' : 'bg-surface border-border')}`}>
                     <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -189,7 +246,9 @@ export const LessonPage = () => {
                     </div>
                 </footer>
             )}
-            <Modal isOpen={showCompletionModal} onClose={() => navigate(`/courses/${courseId}`)} title="Урок пройден!"><div className="text-center py-4"><p className="text-7xl mb-4">🎉</p><p className="text-text-primary text-lg">{completionMessage}</p><Button className="mt-6" onClick={() => navigate(`/courses/${courseId}`)}>Вернуться к курсу</Button></div></Modal>
+
+            <Modal isOpen={showCompletionModal} onClose={() => navigate(challengeId ? '/profile' : `/courses/${courseId}`)} title="Урок пройден!"><div className="text-center py-4"><p className="text-7xl mb-4">🎉</p><p className="text-text-primary text-lg">{completionMessage}</p><Button className="mt-6" onClick={() => navigate(challengeId ? '/profile' : `/courses/${courseId}`)}>{challengeId ? 'Вернуться к челленджам' : 'Вернуться к курсу'}</Button></div></Modal>
+            <Modal isOpen={showChallengeModal} onClose={() => setShowChallengeModal(false)} title="Бросить вызов другу"><div className="py-2"><p className="text-text-secondary mb-4">Выберите друга, которому хотите отправить вызов по этому уроку.</p><select defaultValue="" className="w-full bg-background border border-border rounded-md px-3 py-2 text-text-primary focus:ring-2 focus:ring-primary focus:outline-none" onChange={(e) => setSelectedFriend(Number(e.target.value))}><option value="" disabled>Выберите друга</option>{user?.friends.map(friend => (<option key={friend.id} value={friend.id}>{friend.username}</option>))}</select><Button className="mt-4" onClick={handleSendChallenge} disabled={!selectedFriend || apiIsLoading} isLoading={apiIsLoading}>Отправить вызов</Button></div></Modal>
         </div>
     );
 };
