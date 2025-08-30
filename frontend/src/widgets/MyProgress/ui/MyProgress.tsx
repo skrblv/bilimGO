@@ -25,7 +25,6 @@ const CourseProgressBar = ({ title, percentage, completed, total, xp_earned }: C
     </div>
 );
 
-
 export const MyProgress = () => {
     const [stats, setStats] = useState<UserStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -59,71 +58,52 @@ export const MyProgress = () => {
             indicator: stats.radar_chart.length > 0
                 ? stats.radar_chart.map(item => ({ name: item.name, max: Math.max(...stats.radar_chart.map(i => i.value), 50) }))
                 : [{name: 'Начните учиться', max: 100}],
-            shape: 'circle',
-            center: ['50%', '55%'],
-            radius: '70%',
+            shape: 'circle', center: ['50%', '55%'], radius: '70%',
             axisName: { color: '#8B949E', fontSize: 12 },
             splitArea: { areaStyle: { color: ['rgba(22, 27, 34, 0.7)', 'rgba(31, 111, 235, 0.1)'], shadowColor: 'rgba(0, 0, 0, 0.2)', shadowBlur: 10 } },
             splitLine: { lineStyle: { color: 'rgba(139, 148, 158, 0.2)' } },
             axisLine: { lineStyle: { color: 'rgba(139, 148, 158, 0.2)' } }
         },
         series: [{
-            name: 'XP по направлениям',
-            type: 'radar',
-            data: [{ 
-                value: stats.radar_chart.length > 0 ? stats.radar_chart.map(item => item.value) : [0], 
-                name: 'XP',
-                areaStyle: {
-                    color: 'rgba(88, 166, 255, 0.4)'
-                }
-            }]
+            name: 'XP по направлениям', type: 'radar',
+            data: [{ value: stats.radar_chart.length > 0 ? stats.radar_chart.map(item => item.value) : [0], name: 'XP', areaStyle: { color: 'rgba(88, 166, 255, 0.4)' } }]
         }]
     };
 
-    const getVirtulData = (year: string) => {
-        const startDate = new Date(Number(year), 0, 1);
-        const endDate = new Date(Number(year) + 1, 0, 1);
-        const dayTime = 3600 * 24 * 1000;
-        let data: [string, number][] = [];
-        for (let time = startDate.getTime(); time < endDate.getTime(); time += dayTime) {
-            const formattedDate = new Date(time).toISOString().slice(0, 10);
-            const activity = stats.heatmap.find(d => d[0] === formattedDate);
-            data.push([
-                formattedDate,
-                activity ? activity[1] : 0
-            ]);
-        }
-        return data;
-    }
+    const last7DaysData = [...Array(7)].map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateString = d.toISOString().slice(0, 10);
+        const activity = stats.heatmap.find(h => h[0] === dateString);
+        return {
+            day: d.toLocaleDateString('ru-RU', { weekday: 'short' }),
+            count: activity ? activity[1] : 0,
+        };
+    }).reverse();
 
-    const heatmapOption = {
-        tooltip: {
-            position: 'top',
-            formatter: (p: any) => `${p.data[0]}: ${p.data[1]} уроков`
+    const barChartOption = {
+        tooltip: { trigger: 'axis', backgroundColor: 'rgb(var(--color-surface))', borderColor: 'rgb(var(--color-border))', textStyle: { color: 'rgb(var(--color-text-primary))' } },
+        grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+        xAxis: {
+            type: 'category',
+            data: last7DaysData.map(d => d.day),
+            axisTick: { show: false },
+            axisLine: { lineStyle: { color: 'rgb(var(--color-border))' } },
+            axisLabel: { color: 'rgb(var(--color-text-secondary))' }
         },
-        visualMap: {
-            show: false,
-            min: 0,
-            max: Math.max(...stats.heatmap.map(item => item[1]), 5),
-            inRange: { color: ['#161b22', '#0e4429', '#006d32', '#26a641', '#39d353'] }
+        yAxis: {
+            type: 'value',
+            splitLine: { lineStyle: { color: 'rgb(var(--color-border))', type: 'dashed' } },
+            axisLabel: { color: 'rgb(var(--color-text-secondary))' }
         },
-        calendar: {
-            top: 60,
-            left: 30,
-            right: 30,
-            cellSize: ['auto', 13],
-            range: new Date().getFullYear().toString(),
-            itemStyle: { borderWidth: 2.5, borderColor: '#0D1117', color: '#161b22' },
-            yearLabel: { show: false },
-            monthLabel: { color: '#C9D1D9', nameMap: 'ru' },
-            dayLabel: { color: '#8B949E', nameMap: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'] },
-            splitLine: { show: false }
-        },
-        series: {
-            type: 'heatmap',
-            coordinateSystem: 'calendar',
-            data: getVirtulData(new Date().getFullYear().toString())
-        }
+        series: [{
+            name: 'Уроков пройдено',
+            type: 'bar',
+            barWidth: '40%',
+            data: last7DaysData.map(d => d.count),
+            itemStyle: { color: 'rgb(var(--color-primary))', borderRadius: [4, 4, 0, 0] },
+            emphasis: { itemStyle: { color: 'rgb(var(--color-secondary))' } }
+        }]
     };
 
     return (
@@ -144,8 +124,8 @@ export const MyProgress = () => {
                     <ReactECharts option={radarOption} style={{ height: '350px' }} theme="dark" />
                 </Card>
                 <Card>
-                    <h3 className="text-xl font-bold mb-4 text-primary">Календарь активности</h3>
-                    <ReactECharts option={heatmapOption} style={{ height: '170px' }} theme="dark" />
+                    <h3 className="text-xl font-bold mb-4 text-primary">Активность за неделю</h3>
+                    <ReactECharts option={barChartOption} style={{ height: '350px' }} />
                 </Card>
             </div>
         </motion.div>
