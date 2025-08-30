@@ -8,10 +8,17 @@ interface CourseCardProps {
 }
 
 export const CourseCard = ({ course }: CourseCardProps) => {
+    // --- ОТЛАДОЧНЫЙ ЛОГ ---
+    console.log("CourseCard рендерится с данными:", course);
+    if (!course || typeof course.id === 'undefined') {
+        console.error("КРИТИЧЕСКАЯ ОШИБКА: в CourseCard не передан ID курса!", course);
+        return <div className="text-danger">Ошибка загрузки карточки курса</div>;
+    }
+    // --- КОНЕЦ ОТЛАДКИ ---
+
     const imageUrl = course.image_url || `https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?auto=format&fit=crop&w=1170&q=80`;
 
     return (
-        // --- ВНИМАТЕЛЬНО СМОТРИМ НА ЭТУ СТРОКУ ---
         <Link to={`/courses/${course.id}`} className="block group">
             <Card className="h-full flex flex-col transition-all duration-300 group-hover:border-primary group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:-translate-y-1">
                 <img src={imageUrl} alt={course.title} className="w-full h-40 object-cover rounded-t-lg -mt-6 -mx-6 md:-mx-8" />

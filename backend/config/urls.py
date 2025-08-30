@@ -12,6 +12,8 @@ urlpatterns = [
     path('api/v1/users/', include('users.urls')), 
     
     path('api/v1/', include('courses.urls')),
+    path('api/v1/testing/', include('testing.urls')), # <-- Новый URL
+
 ]
 
 if settings.DEBUG:

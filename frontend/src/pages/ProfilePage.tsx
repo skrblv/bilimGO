@@ -105,7 +105,7 @@ const ProfilePage = () => {
                 <Tab.Group selectedIndex={selectedIndex} onChange={handleTabChange}>
                     <Tab.List className="flex space-x-1 rounded-xl bg-surface p-1 border border-border">
                         {TABS.map((tab) => (
-                            <Tab key={tab.name} className={({ selected }) => classNames('w-full rounded-lg py-2.5 text-sm font-medium leading-5', 'focus:outline-none', selected ? 'bg-primary text-background shadow' : 'text-blue-100 hover:bg-white/[0.12] hover:text-white')}>
+                            <Tab key={tab.name} className={({ selected }) => classNames('w-full rounded-lg py-2.5 text-sm font-medium leading-5', 'focus:outline-none', selected ? 'bg-primary text-background shadow' : 'text-gray-500 hover:bg-white/[0.12] hover:text-gray-700')}>
                                 <span className='flex items-center justify-center gap-2'><tab.icon className="h-5 w-5" /> {tab.name}</span>
                             </Tab>
                         ))}

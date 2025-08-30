@@ -9,11 +9,13 @@ import FindFriendsPage from '../../pages/FindFriendsPage';
 import ProfileEditPage from '../../pages/ProfileEditPage';
 import { LessonPage } from '../../pages/LessonPage';
 import UserProfilePage from '../../pages/UserProfilePage';
+import { DashboardPage } from '../../pages/DashboardPage';
+import { TestHubPage } from '../../pages/TestHubPage';
+import { TestSessionPage } from '../../pages/TestSessionPage';
+import { TestResultPage } from '../../pages/TestResultPage';
 import { useAuthStore } from '../../stores/authStore';
 import { useEffect } from 'react';
 import { MainLayout } from '../layouts/MainLayout';
-import { DashboardPage } from '../../pages/DashboardPage'; // <-- Импорт
-
 
 const AppGate = () => {
     const { isInitialized, initialize } = useAuthStore();
@@ -22,18 +24,9 @@ const AppGate = () => {
         return <div className="flex items-center justify-center h-screen bg-background"><p>Загрузка приложения...</p></div>;
     }
     return <RouterProvider router={router} />;
-}
-
-const PrivateRouteWrapper = () => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    const location = useLocation();
-    if (!isAuthenticated) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
-    return <MainLayout />;
 };
 
-const PrivateRouteStandalone = ({ children }: { children: React.ReactNode }) => {
+const PrivateRouteWrapper = ({ children }: { children: React.ReactNode }) => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const location = useLocation();
     if (!isAuthenticated) {
@@ -47,10 +40,9 @@ const router = createBrowserRouter([
     { path: '/register', element: <RegisterPage /> },
     {
         path: '/',
-        element: <PrivateRouteWrapper />,
+        element: <PrivateRouteWrapper><MainLayout /></PrivateRouteWrapper>,
         children: [
             { index: true, element: <DashboardPage /> },
-            { index: true, element: <Navigate to="/courses" replace /> }, 
             { path: 'courses', element: <CoursesPage /> },
             { path: 'courses/:id', element: <CourseDetailPage /> },
             { path: 'leaderboard', element: <LeaderboardPage /> },
@@ -58,15 +50,17 @@ const router = createBrowserRouter([
             { path: 'profile/edit', element: <ProfileEditPage /> },
             { path: 'friends/find', element: <FindFriendsPage /> },
             { path: 'users/:id', element: <UserProfilePage /> },
+            { path: 'courses/:courseId/test', element: <TestHubPage /> },
+            { path: 'courses/:courseId/test/result', element: <TestResultPage /> },
         ]
     },
     {
         path: '/courses/:courseId/lessons/:lessonId',
-        element: (
-            <PrivateRouteStandalone>
-                <LessonPage />
-            </PrivateRouteStandalone>
-        )
+        element: <PrivateRouteWrapper><LessonPage /></PrivateRouteWrapper>
+    },
+    {
+        path: '/courses/:courseId/test/session',
+        element: <PrivateRouteWrapper><TestSessionPage /></PrivateRouteWrapper>
     },
     { path: '*', element: <Navigate to="/" replace /> },
 ]);

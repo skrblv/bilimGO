@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist', # Для ротации refresh-токенов
     'corsheaders',
     'djoser',
+    'testing.apps.TestingConfig', # <-- Новое приложение
+
 ]
 
 MIDDLEWARE = [

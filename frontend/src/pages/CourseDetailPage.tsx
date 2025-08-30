@@ -4,6 +4,7 @@ import { getCourseById } from '../shared/api/courses';
 import type { CourseDetail } from '../shared/types/course';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 import { SkillTree } from '../widgets/SkillTree/ui/SkillTree';
+import { Button } from '../shared/ui/Button';
 
 const CourseDetailPage = () => {
     // useParams всегда возвращает строку, поэтому мы можем быть в этом уверены
@@ -108,6 +109,13 @@ const CourseDetailPage = () => {
                         <p className="text-text-secondary text-center">Не удалось загрузить дерево навыков.</p>
                     )}
                 </div>
+                            <div className="mt-12 text-center">
+                <p className="text-text-secondary">Готовы проверить свои знания?</p>
+                <Link to={`/courses/${course.id}/test`}>
+                    <Button className="mt-4 max-w-sm mx-auto">Перейти к сертификационному тесту</Button>
+                </Link>
+            </div>
+
             </main>
         </div>
     );

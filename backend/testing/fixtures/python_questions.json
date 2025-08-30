@@ -1,0 +1,602 @@
+[
+  {
+    "model": "testing.questionbank",
+    "pk": 1,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой символ используется для однострочных комментариев в Python?",
+      "options": {"A": "//", "B": "/* ... */", "C": "#", "D": "---"},
+      "correct_answer": "C",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 2,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Переменные в Python должны быть объявлены с указанием типа (например, int x = 5).",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 3,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какая функция используется для вывода информации на экран?",
+      "options": null,
+      "correct_answer": "print",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 4,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой тип данных используется для хранения текста?",
+      "options": {"A": "integer", "B": "string", "C": "boolean", "D": "float"},
+      "correct_answer": "B",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 5,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется оператор для нахождения остатка от деления?",
+      "options": null,
+      "correct_answer": "%",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 6,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Имена переменных в Python могут начинаться с цифры.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 7,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что выведет код: print(10 // 3)?",
+      "options": {"A": "3.33", "B": "3", "C": "1", "D": "Ошибка"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 8,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой оператор используется для возведения в степень?",
+      "options": null,
+      "correct_answer": "**",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 9,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Python является языком со статической типизацией.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 10,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой функцией можно преобразовать строку в целое число?",
+      "options": {"A": "integer()", "B": "str()", "C": "int()", "D": "to_int()"},
+      "correct_answer": "C",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 11,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод строк возвращает строку в верхнем регистре?",
+      "options": null,
+      "correct_answer": "upper()",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 12,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Строки в Python являются изменяемыми (mutable).",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 13,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как получить длину строки 'hello'?",
+      "options": {"A": "'hello'.length", "B": "len('hello')", "C": "length('hello')", "D": "'hello'.size()"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 14,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется тип данных для представления истины или лжи?",
+      "options": null,
+      "correct_answer": "boolean",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 15,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое f-строка?",
+      "options": {"A": "Функциональная строка", "B": "Строка для работы с файлами", "C": "Форматированная строка", "D": "Фиксированная строка"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 16,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Оператор '==' используется для присваивания значения переменной.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 17,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой тип данных будет у переменной x = 5.0?",
+      "options": null,
+      "correct_answer": "float",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 18,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как создать пустой список?",
+      "options": {"A": "list()", "B": "[]", "C": "Оба варианта верны", "D": "Ни один из вариантов"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 19,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Индексация элементов списка начинается с 1.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 20,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод используется для добавления элемента в конец списка?",
+      "options": null,
+      "correct_answer": "append()",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 21,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как получить доступ к последнему элементу списка `my_list`?",
+      "options": {"A": "my_list[0]", "B": "my_list[-1]", "C": "my_list[last]", "D": "my_list.last()"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 22,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Кортежи (tuples) являются изменяемым типом данных.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 23,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой символ используется для создания кортежа?",
+      "options": null,
+      "correct_answer": "()",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 24,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как создать пустой словарь?",
+      "options": {"A": "{}", "B": "dict()", "C": "Оба варианта верны", "D": "Ни один из вариантов"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 25,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "В словаре, что используется для доступа к значению?",
+      "options": null,
+      "correct_answer": "ключ",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 26,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Ключи в словаре могут повторяться.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 27,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой метод вернет все ключи словаря?",
+      "options": {"A": ".keys()", "B": ".values()", "C": ".items()", "D": ".get_keys()"},
+      "correct_answer": "A",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 28,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется структура данных, которая хранит только уникальные элементы?",
+      "options": null,
+      "correct_answer": "множество",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 29,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Множества (sets) поддерживают индексацию.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 30,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какое ключевое слово используется для условных конструкций?",
+      "options": {"A": "when", "B": "if", "C": "check", "D": "case"},
+      "correct_answer": "B",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 31,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какое ключевое слово используется для альтернативного условия после 'if'?",
+      "options": null,
+      "correct_answer": "elif",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 32,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Блок 'else' в конструкции if-elif-else является обязательным.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 33,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой оператор используется для логического 'И'?",
+      "options": {"A": "&&", "B": "||", "C": "and", "D": "OR"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 34,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой оператор используется для логического 'НЕ'?",
+      "options": null,
+      "correct_answer": "not",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 35,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Цикл 'for' в Python может перебирать только списки.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 36,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какая функция используется для создания последовательности чисел для цикла 'for'?",
+      "options": {"A": "sequence()", "B": "numbers()", "C": "series()", "D": "range()"},
+      "correct_answer": "D",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 37,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какое ключевое слово используется для определения цикла, который выполняется, пока условие истинно?",
+      "options": null,
+      "correct_answer": "while",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 38,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Оператор 'break' полностью завершает выполнение текущего цикла.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 39,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой оператор используется для пропуска оставшейся части итерации и перехода к следующей?",
+      "options": null,
+      "correct_answer": "continue",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 40,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какое ключевое слово используется для определения функции?",
+      "options": {"A": "function", "B": "func", "C": "def", "D": "define"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 41,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Функция в Python всегда должна возвращать значение с помощью 'return'.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 42,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называются переменные, переданные в функцию при ее вызове?",
+      "options": null,
+      "correct_answer": "аргументы",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 43,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что вернет функция, если в ней нет оператора 'return'?",
+      "options": {"A": "0", "B": "False", "C": "Ошибка", "D": "None"},
+      "correct_answer": "D",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 44,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Переменные, созданные внутри функции, доступны за ее пределами.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 45,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется область видимости переменных?",
+      "options": null,
+      "correct_answer": "scope",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 46,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое *args в определении функции?",
+      "options": {"A": "Аргумент по умолчанию", "B": "Именованный аргумент", "C": "Список позиционных аргументов", "D": "Словарь именованных аргументов"},
+      "correct_answer": "C",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 47,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое **kwargs в определении функции?",
+      "options": {"A": "Аргумент по умолчанию", "B": "Именованный аргумент", "C": "Список позиционных аргументов", "D": "Словарь именованных аргументов"},
+      "correct_answer": "D",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 48,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Лямбда-функция может содержать несколько выражений.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 49,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод строк используется для разделения строки на список по разделителю?",
+      "options": null,
+      "correct_answer": "split()",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 50,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что выведет `print(type(True))`?",
+      "options": {"A": "<class 'bool'>", "B": "<class 'int'>", "C": "<class 'str'>", "D": "Ошибка"},
+      "correct_answer": "A",
+      "difficulty": 2
+    }
+  }
+]
