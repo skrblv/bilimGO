@@ -598,5 +598,605 @@
       "correct_answer": "A",
       "difficulty": 2
     }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 51,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод списка удаляет элемент по его индексу и возвращает его?",
+      "options": null,
+      "correct_answer": "pop()",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 52,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что делает метод `.get(key, default)` для словаря?",
+      "options": {"A": "Удаляет ключ", "B": "Возвращает значение по ключу или значение по умолчанию, если ключа нет", "C": "Возвращает True, если ключ существует", "D": "Создает новый ключ"},
+      "correct_answer": "B",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 53,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Цикл `while True:` без `break` будет выполняться бесконечно.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 54,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется конструкция, которая позволяет элегантно обрабатывать исключения (ошибки)?",
+      "options": null,
+      "correct_answer": "try...except",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 55,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой из этих типов данных является изменяемым (mutable)?",
+      "options": {"A": "str", "B": "tuple", "C": "int", "D": "list"},
+      "correct_answer": "D",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 56,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Можно ли использовать число в качестве ключа в словаре?",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 57,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод строк объединяет элементы списка в одну строку с заданным разделителем?",
+      "options": null,
+      "correct_answer": "join()",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 58,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое `pass` в Python?",
+      "options": {"A": "Оператор для выхода из функции", "B": "Оператор-заглушка, который ничего не делает", "C": "Оператор для пропуска итерации цикла", "D": "Оператор для вывода сообщения"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 59,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Функция `range(5)` сгенерирует последовательность чисел от 1 до 5.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 60,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как импортировать модуль `math` в ваш скрипт?",
+      "options": null,
+      "correct_answer": "import math",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 61,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как получить срез списка `my_list` с 1-го по 3-й элемент (не включая 3-й)?",
+      "options": {"A": "my_list[1:3]", "B": "my_list(1,3)", "C": "my_list[1..3]", "D": "my_list.slice(1,3)"},
+      "correct_answer": "A",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 62,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "`None` в Python — это то же самое, что и `0`.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 63,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется специальный метод класса, который определяет, как объект будет представлен в виде строки?",
+      "options": null,
+      "correct_answer": "__str__",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 64,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что делает `set.intersection(other_set)`?",
+      "options": {"A": "Объединяет два множества", "B": "Находит разницу между множествами", "C": "Возвращает элементы, которые есть в обоих множествах", "D": "Проверяет, является ли одно множество подмножеством другого"},
+      "correct_answer": "C",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 65,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Python поддерживает перегрузку методов, как в Java или C++.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 5
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 66,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой менеджер контекста используется для работы с файлами, который автоматически закрывает файл после использования?",
+      "options": null,
+      "correct_answer": "with",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 67,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой из этих методов списка сортирует его на месте (изменяя сам список)?",
+      "options": {"A": "sorted()", "B": ".sort()", "C": ".order()", "D": "Ни один из них"},
+      "correct_answer": "B",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 68,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Ключевое слово `global` позволяет изменять глобальную переменную внутри функции.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 69,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется стандартный менеджер пакетов для Python?",
+      "options": null,
+      "correct_answer": "pip",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 70,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое list comprehension (списковое включение)?",
+      "options": {"A": "Способ проверить, входит ли элемент в список", "B": "Короткий способ создать новый список на основе существующего", "C": "Метод для сжатия списков", "D": "Функция для понимания списков"},
+      "correct_answer": "B",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 71,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "`is` и `==` — это полностью взаимозаменяемые операторы.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 72,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой магический метод отвечает за оператор `+`?",
+      "options": null,
+      "correct_answer": "__add__",
+      "difficulty": 5
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 73,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое PEP 8?",
+      "options": {"A": "Версия Python", "B": "Библиотека для веб-разработки", "C": "Руководство по стилю кода", "D": "Система управления ошибками"},
+      "correct_answer": "C",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 74,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "В Python можно объявить несколько переменных в одной строке: `a, b = 1, 2`.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 75,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется объект, который можно перебирать в цикле `for`?",
+      "options": null,
+      "correct_answer": "итерируемый",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 76,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какой метод удаляет первый найденный элемент с указанным значением из списка?",
+      "options": {"A": ".pop()", "B": "del", "C": ".remove()", "D": ".discard()"},
+      "correct_answer": "C",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 77,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Можно создать словарь, ключами которого будут списки.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 78,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется концепция, когда одна функция может принимать другую функцию в качестве аргумента?",
+      "options": null,
+      "correct_answer": "функция высшего порядка",
+      "difficulty": 5
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 79,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что выведет `print('Hi' * 3)`?",
+      "options": {"A": "Ошибка", "B": "Hi3", "C": "9", "D": "HiHiHi"},
+      "correct_answer": "D",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 80,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Функция `input()` по умолчанию возвращает числовой тип данных.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 81,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется первый аргумент в методах класса, ссылающийся на сам объект?",
+      "options": null,
+      "correct_answer": "self",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 82,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое `__name__ == '__main__'`?",
+      "options": {"A": "Проверка имени файла", "B": "Проверка, что скрипт запущен напрямую, а не импортирован", "C": "Магический метод для главного класса", "D": "Константа, равная '__main__'"},
+      "correct_answer": "B",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 83,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "В Python есть приватные переменные, к которым нельзя получить доступ извне класса.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 84,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется концепция ООП, объединяющая данные и методы для работы с ними в одном объекте?",
+      "options": null,
+      "correct_answer": "инкапсуляция",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 85,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как получить доступ к значению 'age' в словаре `person = {'name': 'John', 'age': 30}`?",
+      "options": {"A": "person.age", "B": "person['age']", "C": "Оба варианта верны", "D": "Ни один из вариантов"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 86,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "`1` и `1.0` равны при сравнении через `==`.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 87,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод списка используется для его разворота на месте?",
+      "options": null,
+      "correct_answer": "reverse()",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 88,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что такое модуль в Python?",
+      "options": {"A": "Тип данных", "B": "Файл с расширением .py, содержащий код", "C": "Встроенная функция", "D": "Переменная"},
+      "correct_answer": "B",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 89,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Отступы в Python используются только для красоты кода и не влияют на его выполнение.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 90,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой тип ошибки возникает при попытке деления на ноль?",
+      "options": null,
+      "correct_answer": "ZeroDivisionError",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 91,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Как проверить, есть ли строка 'sub' внутри строки 'main_string'?",
+      "options": {"A": "'sub' in 'main_string'", "B": "'main_string'.contains('sub')", "C": "'main_string'.find('sub') != -1", "D": "Оба варианта А и С верны"},
+      "correct_answer": "D",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 92,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Можно добавлять новые элементы в кортеж после его создания.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 2
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 93,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Как называется концепция ООП, позволяющая объектам разных классов отвечать на один и тот же вызов метода?",
+      "options": null,
+      "correct_answer": "полиморфизм",
+      "difficulty": 5
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 94,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Что выведет `list(range(2, 5))`?",
+      "options": {"A": "[2, 3, 4, 5]", "B": "[2, 3, 4]", "C": "[2, 5]", "D": "[3, 4, 5]"},
+      "correct_answer": "B",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 95,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Оператор `or` вернет `True`, если хотя бы один из операндов истинен.",
+      "options": null,
+      "correct_answer": "True",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 96,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод словаря удаляет пару ключ-значение и возвращает значение?",
+      "options": null,
+      "correct_answer": "pop()",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 97,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Какое ключевое слово используется для создания анонимной функции?",
+      "options": {"A": "def", "B": "anonymous", "C": "lambda", "D": "func"},
+      "correct_answer": "C",
+      "difficulty": 4
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 98,
+    "fields": {
+      "course": 1,
+      "task_type": "true_false",
+      "question": "Можно иметь несколько блоков `else` для одного `if`.",
+      "options": null,
+      "correct_answer": "False",
+      "difficulty": 1
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 99,
+    "fields": {
+      "course": 1,
+      "task_type": "text_input",
+      "question": "Какой метод используется, чтобы проверить, состоит ли строка только из цифр?",
+      "options": null,
+      "correct_answer": "isdigit()",
+      "difficulty": 3
+    }
+  },
+  {
+    "model": "testing.questionbank",
+    "pk": 100,
+    "fields": {
+      "course": 1,
+      "task_type": "multiple_choice",
+      "question": "Кто является создателем языка Python?",
+      "options": {"A": "Деннис Ритчи", "B": "Брендан Эйх", "C": "Джеймс Гослинг", "D": "Гвидо ван Россум"},
+      "correct_answer": "D",
+      "difficulty": 1
+    }
   }
 ]
