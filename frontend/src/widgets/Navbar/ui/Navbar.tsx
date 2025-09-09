@@ -31,7 +31,7 @@ export const Navbar = () => {
                     {/* Левая часть: Лого и основные ссылки */}
                     <div className="flex items-center gap-8">
                         <Link to="/" className="text-primary font-bold text-xl">
-                            EduPlatform
+                            DevProof
                         </Link>
                         <nav className="hidden md:flex items-center gap-4">
                             <NavItem to="/courses">

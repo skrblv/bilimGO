@@ -40,7 +40,7 @@ const LoginPage = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-background p-4">
             <div className="w-full max-w-md">
-                <h1 className="text-3xl font-bold text-center text-primary mb-6">EduPlatform</h1>
+                <h1 className="text-3xl font-bold text-center text-primary mb-6">DevProof</h1>
                 <Card>
                     <h2 className="text-xl font-semibold text-text-primary mb-6 text-center">Вход в аккаунт</h2>
                     {message && <p className="text-success text-center bg-success/10 p-3 rounded-md mb-4">{message}</p>}
